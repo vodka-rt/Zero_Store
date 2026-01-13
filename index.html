@@ -5,18 +5,14 @@
 <title>Multi Craft - Loja Oficial</title>
 
 <style>
-/* GERAL */
 html, body {
   margin: 0;
   padding: 0;
   font-family: Arial, sans-serif;
   background: #111;
   color: #fff;
-  min-height: 100%;
-  overflow-y: auto;
 }
 
-/* CABEÇALHO */
 header {
   background: #1c1c1c;
   padding: 20px;
@@ -28,7 +24,6 @@ header h1 {
   color: #00ff88;
 }
 
-/* LISTA DE KITS */
 .container {
   padding: 20px;
   display: grid;
@@ -36,7 +31,6 @@ header h1 {
   gap: 20px;
 }
 
-/* KIT */
 .kit {
   background: #1e1e1e;
   border-radius: 8px;
@@ -49,16 +43,11 @@ header h1 {
   border-radius: 6px;
 }
 
-.kit h2 {
-  margin: 10px 0 5px;
-}
-
 .preco {
   color: #00ff88;
   font-weight: bold;
 }
 
-/* INPUTS */
 input, button {
   width: 100%;
   padding: 10px;
@@ -78,24 +67,17 @@ button {
   cursor: pointer;
 }
 
-button:hover {
-  background: #00cc6e;
-}
-
-/* COMPLEMENTOS */
 .comps {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   margin-top: 10px;
 }
 
 .comps img {
   width: 32%;
   border-radius: 6px;
-  border: 1px solid #333;
 }
 
-/* PAGAMENTO */
 .pagamento {
   display: none;
   padding: 30px;
@@ -104,13 +86,6 @@ button:hover {
 
 .pagamento.active {
   display: block;
-}
-
-.pix {
-  background: #1e1e1e;
-  padding: 20px;
-  border-radius: 8px;
-  margin-top: 20px;
 }
 
 .confirmado {
@@ -130,18 +105,25 @@ button:hover {
 
 <div class="container">
 
+<!-- KIT DIMA -->
+<div class="kit">
+  <img src="images/kit-dima.jpg">
+  <h2>Kit Dima</h2>
+  <p class="preco">R$2,00</p>
+  <input id="nick-dima" placeholder="Nick do jogador">
+  <button onclick="comprar('Kit Dima', 2, 'nick-dima')">Comprar</button>
+</div>
+
 <!-- KIT TRIO -->
 <div class="kit">
   <img src="images/kit-trio.jpg">
   <h2>Kit Trio</h2>
   <p class="preco">R$30,00</p>
-
   <div class="comps">
     <img src="images/comp-kit-trio.jpg">
     <img src="images/comp-kit-trio1.jpg">
     <img src="images/comp-kit-trio2.jpg">
   </div>
-
   <input id="nick-trio" placeholder="Nick do jogador">
   <button onclick="comprar('Kit Trio', 30, 'nick-trio')">Comprar</button>
 </div>
@@ -151,7 +133,6 @@ button:hover {
   <img src="images/kit-cpvp.jpg">
   <h2>Kit CPVP</h2>
   <p class="preco">R$5,00</p>
-
   <input id="nick-cpvp" placeholder="Nick do jogador">
   <button onclick="comprar('Kit CPVP', 5, 'nick-cpvp')">Comprar</button>
 </div>
@@ -161,44 +142,31 @@ button:hover {
   <img src="images/kit-farm-op.jpg">
   <h2>Kit Farm OP</h2>
   <p class="preco">R$25,00</p>
-
   <input id="nick-farm" placeholder="Nick do jogador">
   <button onclick="comprar('Kit Farm OP', 25, 'nick-farm')">Comprar</button>
 </div>
 
 </div>
 
-<!-- PAGAMENTO -->
 <div class="pagamento" id="pagamento">
   <h2>Pagamento via PIX</h2>
-
-  <div class="pix">
-    <p><strong>Chave PIX:</strong></p>
-    <p>SEU_PIX_AQUI</p>
-
-    <button onclick="confirmarPagamento()">Confirmar pagamento</button>
-  </div>
-
+  <p>Chave PIX: <b>SEU_PIX_AQUI</b></p>
+  <button onclick="confirmarPagamento()">Confirmar pagamento</button>
   <div class="confirmado" id="confirmado"></div>
 </div>
 
 <script>
-let compraAtual = null;
-
 function comprar(kit, preco, nickId) {
   const nick = document.getElementById(nickId).value;
   if (!nick) {
-    alert("Digite o nick do jogador");
+    alert("Digite o nick");
     return;
   }
-
-  compraAtual = { kit, preco, nick };
   document.querySelector('.container').style.display = 'none';
   document.getElementById('pagamento').classList.add('active');
 }
 
 function confirmarPagamento() {
-  document.querySelector('.pix').style.display = 'none';
   document.getElementById('confirmado').innerText =
     "Pagamento realizado! Entre no servidor para receber seus equipamentos.";
 }
