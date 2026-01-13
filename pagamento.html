@@ -1,72 +1,139 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<title>Pagamento • Multi Craft</title>
-<style>
-body{
-  font-family: Arial;
-  background:#1e1e1e;
-  color:#fff;
-  text-align:center;
-  padding:40px
-}
-.box{
-  background:#2b2b2b;
-  padding:30px;
-  border-radius:10px;
-  max-width:500px;
-  margin:auto
-}
-.pix{
-  background:#111;
-  padding:15px;
-  margin-top:15px;
-  word-break:break-all;
-  border-radius:5px
-}
-.success{
-  color:#00ff88;
-  font-size:22px
-}
-.wait{
-  color:#ffcc00
-}
-</style>
-</head>
+  <meta charset="UTF-8">
+  <title>Pagamento - Multi Craft</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f0f0f;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    .box {
+      background: #1c1c1c;
+      padding: 25px;
+      border-radius: 10px;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 0 15px rgba(0,0,0,0.6);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    .info {
+      margin: 10px 0;
+      font-size: 15px;
+    }
+
+    .pix {
+      background: #111;
+      padding: 12px;
+      border-radius: 6px;
+      margin: 15px 0;
+      text-align: center;
+      word-break: break-all;
+      font-weight: bold;
+      border: 1px solid #333;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 15px;
+      background: #00c853;
+      color: #000;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background: #00e676;
+    }
+
+    .aguarde {
+      margin-top: 15px;
+      text-align: center;
+      color: #ffcc00;
+      display: none;
+    }
+  </style>
+</head>
 <body>
 
-<div class="box" id="content">
-  <h2>Pagamento via Pix</h2>
-  <p class="wait">Aguardando confirmação do pagamento...</p>
-  <p>Envie o Pix para a chave abaixo:</p>
-  <div class="pix">10099770164</div>
-</div>
+  <div class="box">
+    <h1>Pagamento PIX</h1>
 
-<script>
-function verificarPagamento(){
-  const pagamento = JSON.parse(localStorage.getItem("payment"));
-  const confirmado = localStorage.getItem("paymentConfirmed");
+    <div class="info"><b>Servidor:</b> Multi Craft</div>
+    <div class="info"><b>Nick:</b> <span id="nick"></span></div>
+    <div class="info"><b>Kit:</b> <span id="kit"></span></div>
+    <div class="info"><b>Valor:</b> R$ <span id="valor"></span></div>
 
-  if(!pagamento) return;
+    <div class="pix">
+      CHAVE PIX:<br>
+      10099770164
+    </div>
 
-  if(confirmado && pagamento.id == confirmado){
-    document.getElementById("content").innerHTML = `
-      <h2 class="success">✅ Pagamento realizado!</h2>
-      <p>Entre no servidor <strong>Multi Craft</strong></p>
-      <p>para receber seus equipamentos.</p>
-      <hr>
-      <p><strong>Item:</strong> ${pagamento.item}</p>
-      <p><strong>Nick:</strong> ${pagamento.nick}</p>
-      <p><strong>Valor pago:</strong> R$ ${pagamento.finalPrice}</p>
-    `;
-  }
-}
+    <button onclick="confirmarPagamento()">Já paguei</button>
 
-// checa a cada 1 segundo
-setInterval(verificarPagamento, 1000);
-</script>
+    <div class="aguarde" id="aguarde">
+      Pagamento enviado!<br>
+      Aguarde a confirmação de um staff.
+    </div>
+  </div>
+
+  <!-- FIREBASE -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyASk1w8w6YzIQhkbJh7xv5BJb8ZHmG7MxM",
+      authDomain: "multicraft-ea978.firebaseapp.com",
+      databaseURL: "https://multicraft-ea978-default-rtdb.firebaseio.com",
+      projectId: "multicraft-ea978",
+      storageBucket: "multicraft-ea978.firebasestorage.app",
+      messagingSenderId: "587079793250",
+      appId: "1:587079793250:web:21d3fb74ae55eb6f5eef3b"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+
+    const params = new URLSearchParams(window.location.search);
+    const nick = params.get("nick");
+    const kit = params.get("kit");
+    const valor = params.get("valor");
+
+    document.getElementById("nick").innerText = nick;
+    document.getElementById("kit").innerText = kit;
+    document.getElementById("valor").innerText = valor;
+
+    window.confirmarPagamento = function () {
+      push(ref(database, "compras"), {
+        nick: nick,
+        kit: kit,
+        valor: valor,
+        status: "pendente",
+        data: new Date().toLocaleString()
+      });
+
+      document.getElementById("aguarde").style.display = "block";
+    }
+  </script>
 
 </body>
 </html>
