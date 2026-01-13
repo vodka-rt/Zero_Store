@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Admin Panel - Multi Craft</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  margin:0;
+  background:#0f0f0f;
+  font-family:Arial;
+  color:#fff;
+}
+header{
+  background:#1c1c1c;
+  padding:15px;
+  text-align:center;
+}
+.box{
+  max-width:800px;
+  margin:30px auto;
+  background:#1c1c1c;
+  padding:20px;
+  border-radius:10px;
+}
+input{
+  width:100%;
+  padding:10px;
+  margin:10px 0;
+  border:none;
+  border-radius:5px;
+}
+button{
+  padding:8px 12px;
+  margin:5px 5px 0 0;
+  border:none;
+  border-radius:5px;
+  font-weight:bold;
+  cursor:pointer;
+}
+.ok{ background:#00c853; }
+.no{ background:#d50000; color:#fff; }
+.compra{
+  background:#111;
+  padding:10px;
+  border-radius:5px;
+  margin-top:10px;
+}
+#painel{ display:none; }
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>Admin Panel - Multi Craft</h1>
+</header>
+
+<div class="box" id="login">
+<h3>Login Admin</h3>
+<input type="password" id="senha" placeholder="Senha">
+<button onclick="entrar()">Entrar</button>
+</div>
+
+<div class="box" id="painel">
+<h3>Compras Pendentes</h3>
+<div id="lista"></div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyASk1w8w6YzIQhkbJh7xv5BJb8ZHmG7MxM",
+  authDomain: "multicraft-ea978.firebaseapp.com",
+  databaseURL: "https://multicraft-ea978-default-rtdb.firebaseio.com",
+  projectId: "multicraft-ea978",
+  storageBucket: "multicraft-ea978.firebasestorage.app",
+  messagingSenderId: "587079793250",
+  appId: "1:587079793250:web:21d3fb74ae55eb6f5eef3b"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+window.entrar = function(){
+  const senha = document.getElementById("senha").value;
+  if(senha !== "MultiCraftStaff1235"){
+    alert("Senha incorreta");
+    return;
+  }
+  document.getElementById("login").style.display="none";
+  document.getElementById("painel").style.display="block";
+  carregar();
+};
+
+function carregar(){
+  const lista = document.getElementById("lista");
+  onValue(ref(db,"compras"), snap=>{
+    lista.innerHTML="";
+    snap.forEach(c=>{
+      const d = c.val();
+      if(d.status === "pendente"){
+        const div = document.createElement("div");
+        div.className="compra";
+        div.innerHTML=`
+          <p><b>Nick:</b> ${d.nick}</p>
+          <p><b>Kit:</b> ${d.kit}</p>
+          <p><b>Valor:</b> R$ ${d.valor}</p>
+          <button class="ok" onclick="confirmar('${c.key}')">Confirmar</button>
+          <button class="no" onclick="negar('${c.key}')">Negar</button>
+        `;
+        lista.appendChild(div);
+      }
+    });
+  });
+}
+
+window.confirmar = id =>{
+  update(ref(db,"compras/"+id),{status:"confirmado"});
+};
+
+window.negar = id =>{
+  update(ref(db,"compras/"+id),{status:"negado"});
+};
+</script>
+
+</body>
+</html>
