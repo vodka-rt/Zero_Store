@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Pagamento - Multi Craft</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      margin: 0;
+      background: #0f0f0f;
+      font-family: Arial, sans-serif;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .box {
+      background: #1c1c1c;
+      padding: 25px;
+      border-radius: 10px;
+      max-width: 400px;
+      width: 100%;
+    }
+
+    .pix {
+      background: #111;
+      padding: 10px;
+      border-radius: 5px;
+      margin: 15px 0;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #00c853;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .aguarde {
+      display: none;
+      margin-top: 15px;
+      text-align: center;
+      color: #ffcc00;
+    }
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <h2>Pagamento PIX</h2>
+
+  <p><b>Nick:</b> <span id="nick"></span></p>
+  <p><b>Kit:</b> <span id="kit"></span></p>
+  <p><b>Valor:</b> R$ <span id="valor"></span></p>
+
+  <div class="pix">
+    CHAVE PIX<br>
+    10099770164
+  </div>
+
+  <button onclick="confirmarPagamento()">Já paguei</button>
+
+  <div class="aguarde" id="aguarde">
+    Pagamento enviado.<br>
+    Aguarde a confirmação de um staff.
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyASk1w8w6YzIQhkbJh7xv5BJb8ZHmG7MxM",
+  authDomain: "multicraft-ea978.firebaseapp.com",
+  databaseURL: "https://multicraft-ea978-default-rtdb.firebaseio.com",
+  projectId: "multicraft-ea978",
+  storageBucket: "multicraft-ea978.firebasestorage.app",
+  messagingSenderId: "587079793250",
+  appId: "1:587079793250:web:21d3fb74ae55eb6f5eef3b"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+const params = new URLSearchParams(window.location.search);
+const nick = params.get("nick");
+const kit = params.get("kit");
+const valor = params.get("valor");
+
+document.getElementById("nick").innerText = nick;
+document.getElementById("kit").innerText = kit;
+document.getElementById("valor").innerText = valor;
+
+window.confirmarPagamento = function () {
+  push(ref(db, "compras"), {
+    nick,
+    kit,
+    valor,
+    status: "pendente",
+    data: new Date().toLocaleString()
+  });
+
+  document.getElementById("aguarde").style.display = "block";
+};
+</script>
+
+</body>
+</html>
