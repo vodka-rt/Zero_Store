@@ -17,11 +17,23 @@ body {
 
 header {
   background: #1c1c1c;
-  padding: 20px;
+  padding: 15px;
   text-align: center;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
-header h1 { color: #00ff88; margin: 0; }
+header h1 { margin: 0; color: #00ff88; }
+
+header button {
+  margin-top: 10px;
+  padding: 8px 12px;
+  background: #00ff88;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+}
 
 .container {
   padding: 20px;
@@ -53,28 +65,25 @@ header h1 { color: #00ff88; margin: 0; }
   border-radius: 6px;
 }
 
-.preco {
-  color: #00ff88;
-  font-weight: bold;
-}
+.preco { color: #00ff88; font-weight: bold; }
 
-button, input {
+input, button {
   width: 100%;
   padding: 10px;
-  margin-top: 8px;
+  margin-top: 6px;
   border-radius: 5px;
   border: none;
+}
+
+input {
+  background: #2a2a2a;
+  color: #fff;
 }
 
 button {
   background: #00ff88;
   font-weight: bold;
   cursor: pointer;
-}
-
-input {
-  background: #2a2a2a;
-  color: #fff;
 }
 
 #pagamento, #admin {
@@ -91,7 +100,7 @@ input {
 .lista {
   background: #2a2a2a;
   padding: 10px;
-  margin-top: 10px;
+  margin-top: 8px;
   border-radius: 5px;
 }
 </style>
@@ -102,16 +111,20 @@ input {
 <header>
   <h1>Multi Craft</h1>
   <p>Loja oficial</p>
+  <button onclick="abrirAdmin()">Painel Admin</button>
 </header>
 
+<!-- LOJA -->
 <div class="container" id="loja">
 
 <div class="kit">
   <img src="images/kit-trio.jpg">
   <h2>Kit Trio</h2>
   <p class="preco">R$30,00</p>
-  <input placeholder="Nick do jogador" id="nick-trio">
-  <button onclick="comprar('Kit Trio',30,'nick-trio')">Comprar</button>
+  <input id="nick-trio" placeholder="Nick do jogador">
+  <input id="cupom-trio" placeholder="Cupom (opcional)">
+  <button onclick="comprar('Kit Trio',30,'nick-trio','cupom-trio')">Comprar</button>
+
   <div class="comps">
     <img src="images/comp-kit-trio.jpg">
     <img src="images/comp-kit-trio1.jpg">
@@ -123,16 +136,9 @@ input {
   <img src="images/kit-god.jpg">
   <h2>Kit God</h2>
   <p class="preco">R$15,00</p>
-  <input placeholder="Nick do jogador" id="nick-god">
-  <button onclick="comprar('Kit God',15,'nick-god')">Comprar</button>
-</div>
-
-<div class="kit">
-  <img src="images/kit-neve-op.jpg">
-  <h2>Kit Neve OP</h2>
-  <p class="preco">R$20,00</p>
-  <input placeholder="Nick do jogador" id="nick-neve">
-  <button onclick="comprar('Kit Neve OP',20,'nick-neve')">Comprar</button>
+  <input id="nick-god" placeholder="Nick do jogador">
+  <input id="cupom-god" placeholder="Cupom (opcional)">
+  <button onclick="comprar('Kit God',15,'nick-god','cupom-god')">Comprar</button>
 </div>
 
 </div>
@@ -145,6 +151,7 @@ input {
     <p><b>Chave PIX:</b> SUA_CHAVE_PIX_AQUI</p>
     <button onclick="confirmar()">Confirmar pagamento</button>
     <p id="status"></p>
+    <button onclick="voltar()">Voltar à loja</button>
   </div>
 </div>
 
@@ -155,6 +162,7 @@ input {
     <input id="senha" placeholder="Senha admin">
     <button onclick="entrarAdmin()">Entrar</button>
     <div id="compras"></div>
+    <button onclick="voltar()">Voltar à loja</button>
   </div>
 </div>
 
@@ -162,15 +170,21 @@ input {
 let compras = [];
 let atual = {};
 
-function comprar(kit, preco, nickId) {
+function comprar(kit, preco, nickId, cupomId) {
   const nick = document.getElementById(nickId).value;
+  const cupom = document.getElementById(cupomId).value;
+
   if (!nick) return alert("Digite o nick");
 
-  atual = { kit, preco, nick };
+  let valor = preco;
+  if (cupom === "BEMVINDO10") valor *= 0.9;
+
+  atual = { kit, nick, valor };
+
   document.getElementById("loja").style.display = "none";
   document.getElementById("pagamento").style.display = "block";
   document.getElementById("infoPagamento").innerText =
-    `Kit: ${kit} | Nick: ${nick} | Valor: R$${preco}`;
+    `Kit: ${kit} | Nick: ${nick} | Valor: R$${valor.toFixed(2)}`;
 }
 
 function confirmar() {
@@ -179,14 +193,27 @@ function confirmar() {
     "✅ Pagamento realizado! Entre no servidor para receber seus itens.";
 }
 
+function abrirAdmin() {
+  document.getElementById("loja").style.display = "none";
+  document.getElementById("pagamento").style.display = "none";
+  document.getElementById("admin").style.display = "block";
+}
+
 function entrarAdmin() {
   if (document.getElementById("senha").value !== "MultiCraftStaff1235") {
     alert("Senha incorreta");
     return;
   }
+
   document.getElementById("compras").innerHTML = compras.map(c =>
-    `<div class="lista">${c.nick} comprou ${c.kit} (R$${c.preco})</div>`
+    `<div class="lista">${c.nick} comprou ${c.kit} (R$${c.valor.toFixed(2)})</div>`
   ).join("");
+}
+
+function voltar() {
+  document.getElementById("admin").style.display = "none";
+  document.getElementById("pagamento").style.display = "none";
+  document.getElementById("loja").style.display = "grid";
 }
 </script>
 
