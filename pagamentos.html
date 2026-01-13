@@ -1,38 +1,56 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Pagamento - MultiCraft</title>
+
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
   <style>
-    body {
-      background: #0e0e0e;
-      color: #fff;
-      font-family: Arial;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+    body{
+      background:#0e0e0e;
+      color:#fff;
+      font-family:Arial, sans-serif;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      min-height:100vh;
+      margin:0;
+      padding:20px;
     }
-
-    .card {
-      background: #1c1c1c;
-      padding: 25px;
-      border-radius: 10px;
-      width: 350px;
-      text-align: center;
+    .card{
+      background:#1c1c1c;
+      padding:25px;
+      border-radius:12px;
+      width:100%;
+      max-width:420px;
+      text-align:center;
     }
-
-    input, button {
-      width: 100%;
-      padding: 12px;
-      margin-top: 10px;
-      border: none;
+    input,button{
+      width:100%;
+      padding:12px;
+      border:none;
+      border-radius:8px;
+      margin-top:10px;
+      font-size:16px;
     }
-
-    button {
-      background: #00ff88;
-      font-weight: bold;
-      cursor: pointer;
+    button{
+      background:#00ff88;
+      font-weight:bold;
+      cursor:pointer;
+    }
+    .line{
+      background:#111;
+      padding:10px;
+      border-radius:8px;
+      margin-top:10px;
+      text-align:left;
+    }
+    .small{
+      font-size:12px;
+      color:#bbb;
+      margin-top:10px;
     }
   </style>
 </head>
@@ -41,54 +59,91 @@
 <div class="card">
   <h2>💳 Pagamento</h2>
 
-  <p><b>Kit:</b> <span id="kit"></span></p>
-  <p><b>Valor:</b> R$<span id="valor"></span></p>
-  <p><b>Chave PIX:</b><br>10099770164</p>
+  <div class="line"><b>📦 Kit:</b> <span id="kit">-</span></div>
+  <div class="line"><b>💰 Valor:</b> R$ <span id="valor">-</span></div>
 
-  <input id="nick" placeholder="Nick no Minecraft">
+  <div class="line" style="text-align:center;">
+    <div><b>🔑 Chave PIX</b></div>
+    <div style="font-size:18px;margin-top:6px;"><b>10099770164</b></div>
+  </div>
+
+  <input id="nick" placeholder="Nick no Minecraft" />
 
   <button onclick="confirmar()">Já paguei</button>
 
-  <p style="margin-top:10px;font-size:12px">
-    Aguarde a confirmação de um staff.
-  </p>
+  <div class="small">
+    Aguarde a confirmação de um staff para receber seus itens.
+  </div>
 </div>
 
 <script>
-const webhookPendente = "https://discord.com/api/webhooks/1460447479563682012/ZwXCxogPkp2EBYQGE7--VVY9OFS7Ma7-APSRoVQFM0JbCrQu-ufUkfwTMRwdtiXoZo_G";
-
-document.getElementById("kit").innerText = localStorage.getItem("kit");
-document.getElementById("valor").innerText = localStorage.getItem("valor");
-
-function confirmar() {
-  const nick = document.getElementById("nick").value;
-
-  if (!nick) {
-    alert("Digite seu nick!");
-    return;
-  }
-
-  const dados = {
-    nick,
-    kit: localStorage.getItem("kit"),
-    valor: localStorage.getItem("valor")
+  // ✅ Firebase (seu config)
+  const firebaseConfig = {
+    apiKey: "AIzaSyASk1w8w6YzIQhkbJh7xv5BJb8ZHmG7MxM",
+    authDomain: "multicraft-ea978.firebaseapp.com",
+    databaseURL: "https://multicraft-ea978-default-rtdb.firebaseio.com",
+    projectId: "multicraft-ea978",
+    storageBucket: "multicraft-ea978.firebasestorage.app",
+    messagingSenderId: "587079793250",
+    appId: "1:587079793250:web:21d3fb74ae55eb6f5eef3b"
   };
 
-  fetch(webhookPendente, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      content:
-        "🕒 **COMPRA PENDENTE**\n" +
-        "👤 Nick: " + dados.nick + "\n" +
-        "📦 Kit: " + dados.kit + "\n" +
-        "💰 Valor: R$" + dados.valor
-    })
-  });
+  if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
 
-  localStorage.setItem("compraPendente", JSON.stringify(dados));
-  alert("Pagamento enviado! Aguarde.");
-}
+  // ✅ Webhook PRIVADO (pendente)
+  const webhookPendente = "https://discord.com/api/webhooks/1460447479563682012/ZwXCxogPkp2EBYQGE7--VVY9OFS7Ma7-APSRoVQFM0JbCrQu-ufUkfwTMRwdtiXoZo_G";
+
+  // ✅ Mantém igual (pega kit/valor do localStorage, como seu index faz)
+  const kit = localStorage.getItem("kit") || "-";
+  const valor = localStorage.getItem("valor") || "-";
+  document.getElementById("kit").innerText = kit;
+  document.getElementById("valor").innerText = valor;
+
+  async function confirmar(){
+    const nick = document.getElementById("nick").value.trim();
+
+    if (!nick) {
+      alert("Digite seu nick!");
+      return;
+    }
+    if (kit === "-" || valor === "-") {
+      alert("Volte para a loja e escolha um kit.");
+      return;
+    }
+
+    // ✅ cria compra central no Firebase (aparece no seu admin em qualquer PC/celular)
+    const id = db.ref("compras").push().key;
+
+    const compra = {
+      nick,
+      kit,
+      valor,
+      status: "pendente",
+      createdAt: Date.now()
+    };
+
+    await db.ref("compras/" + id).set(compra);
+
+    // ✅ avisa no Discord privado
+    fetch(webhookPendente, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        content:
+          "🟡 **COMPRA PENDENTE**\n" +
+          "👤 Nick: " + nick + "\n" +
+          "📦 Kit: " + kit + "\n" +
+          "💰 Valor: R$" + valor + "\n" +
+          "🆔 ID: " + id
+      })
+    }).catch(()=>{});
+
+    alert("Pagamento enviado! Aguarde a confirmação de um staff.");
+  }
+
+  // deixa a função global pro onclick
+  window.confirmar = confirmar;
 </script>
 
 </body>
