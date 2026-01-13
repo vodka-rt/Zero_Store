@@ -3,90 +3,114 @@
 <head>
 <meta charset="UTF-8">
 <title>Multi Craft - Loja Oficial</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 body {
-  margin:0;
+  margin: 0;
   font-family: Arial, sans-serif;
-  background:#0e0e0e;
-  color:white;
+  background: #0e0e0e;
+  color: white;
 }
 
+/* TOPO */
 header {
-  background:#111;
-  padding:20px;
-  text-align:center;
-  font-size:28px;
-  font-weight:bold;
+  background: #111;
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
+header h1 {
+  margin: 0;
+  font-size: 22px;
+}
+
+header a {
+  color: white;
+  text-decoration: none;
+  background: #d32f2f;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+/* CONTEÚDO */
 .container {
-  max-width:1100px;
-  margin:auto;
-  padding:20px;
+  max-width: 1200px;
+  margin: auto;
+  padding: 20px;
 }
 
 input {
-  width:100%;
-  padding:12px;
-  margin-bottom:20px;
-  border-radius:6px;
-  border:none;
-  font-size:16px;
+  width: 100%;
+  padding: 12px;
+  border-radius: 6px;
+  border: none;
+  font-size: 16px;
+  margin-bottom: 25px;
 }
 
+/* KITS */
 .kits {
-  display:grid;
-  grid-template-columns: repeat(auto-fill,minmax(220px,1fr));
-  gap:20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
 }
 
 .kit {
-  background:#1a1a1a;
-  padding:15px;
-  border-radius:10px;
-  text-align:center;
+  background: #1a1a1a;
+  border-radius: 10px;
+  padding: 15px;
+  text-align: center;
 }
 
 .kit img {
-  width:100%;
-  height:150px;
-  object-fit:cover;
-  border-radius:8px;
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
 }
 
 .kit h3 {
-  margin:10px 0 5px;
+  margin: 10px 0 5px;
 }
 
 .kit p {
-  margin:5px 0;
+  margin: 5px 0;
+  color: #ccc;
 }
 
 .kit button {
-  margin-top:10px;
-  width:100%;
-  padding:10px;
-  border:none;
-  border-radius:6px;
-  background:#00c853;
-  font-weight:bold;
-  cursor:pointer;
+  margin-top: 10px;
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  background: #00c853;
+  font-weight: bold;
+  cursor: pointer;
 }
 
+/* RODAPÉ */
 footer {
-  margin-top:40px;
-  padding:15px;
-  text-align:center;
-  background:#111;
-  font-size:14px;
+  margin-top: 40px;
+  background: #111;
+  padding: 15px;
+  text-align: center;
+  font-size: 14px;
+  color: #aaa;
 }
 </style>
 </head>
 
 <body>
 
-<header>Multi Craft - Loja Oficial</header>
+<header>
+  <h1>Multi Craft - Loja Oficial</h1>
+  <a href="admin.html" target="_blank">Painel Admin</a>
+</header>
 
 <div class="container">
 
@@ -184,18 +208,24 @@ footer {
 </div>
 
 <footer>
-© Multi Craft • Loja oficial do servidor
+© Multi Craft • Loja oficial do servidor Minecraft Bedrock
 </footer>
 
 <script>
-function comprar(nome,valor){
-  const nick = document.getElementById("nick").value;
-  if(!nick){
-    alert("Digite seu nick primeiro");
+function comprar(nome, valor) {
+  const nick = document.getElementById("nick").value.trim();
+
+  if (!nick) {
+    alert("Digite seu nick do Minecraft primeiro.");
     return;
   }
-  const url = `pagamentos.html?nick=${encodeURIComponent(nick)}&kit=${encodeURIComponent(nome)}&valor=${valor}`;
-  window.open(url,"_blank");
+
+  const url =
+    `pagamentos.html?nick=${encodeURIComponent(nick)}` +
+    `&kit=${encodeURIComponent(nome)}` +
+    `&valor=${valor}`;
+
+  window.open(url, "_blank");
 }
 </script>
 
