@@ -7,14 +7,14 @@
 
   <style>
     body {
-      font-family: Arial, sans-serif;
+      margin: 0;
       background: #0f0f0f;
+      font-family: Arial, sans-serif;
       color: #fff;
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      margin: 0;
     }
 
     .box {
@@ -23,117 +23,95 @@
       border-radius: 10px;
       max-width: 400px;
       width: 100%;
-      box-shadow: 0 0 15px rgba(0,0,0,0.6);
-    }
-
-    h1 {
-      text-align: center;
-      margin-bottom: 15px;
-    }
-
-    .info {
-      margin: 10px 0;
-      font-size: 15px;
     }
 
     .pix {
       background: #111;
-      padding: 12px;
-      border-radius: 6px;
+      padding: 10px;
+      border-radius: 5px;
       margin: 15px 0;
       text-align: center;
-      word-break: break-all;
       font-weight: bold;
-      border: 1px solid #333;
     }
 
     button {
       width: 100%;
       padding: 12px;
-      margin-top: 15px;
       background: #00c853;
-      color: #000;
-      font-size: 16px;
       border: none;
-      border-radius: 6px;
-      cursor: pointer;
+      border-radius: 5px;
       font-weight: bold;
-    }
-
-    button:hover {
-      background: #00e676;
+      cursor: pointer;
     }
 
     .aguarde {
+      display: none;
       margin-top: 15px;
       text-align: center;
       color: #ffcc00;
-      display: none;
     }
   </style>
 </head>
 <body>
 
-  <div class="box">
-    <h1>Pagamento PIX</h1>
+<div class="box">
+  <h2>Pagamento PIX</h2>
 
-    <div class="info"><b>Servidor:</b> Multi Craft</div>
-    <div class="info"><b>Nick:</b> <span id="nick"></span></div>
-    <div class="info"><b>Kit:</b> <span id="kit"></span></div>
-    <div class="info"><b>Valor:</b> R$ <span id="valor"></span></div>
+  <p><b>Nick:</b> <span id="nick"></span></p>
+  <p><b>Kit:</b> <span id="kit"></span></p>
+  <p><b>Valor:</b> R$ <span id="valor"></span></p>
 
-    <div class="pix">
-      CHAVE PIX:<br>
-      10099770164
-    </div>
-
-    <button onclick="confirmarPagamento()">Já paguei</button>
-
-    <div class="aguarde" id="aguarde">
-      Pagamento enviado!<br>
-      Aguarde a confirmação de um staff.
-    </div>
+  <div class="pix">
+    CHAVE PIX<br>
+    10099770164
   </div>
 
-  <!-- FIREBASE -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+  <button onclick="confirmarPagamento()">Já paguei</button>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyASk1w8w6YzIQhkbJh7xv5BJb8ZHmG7MxM",
-      authDomain: "multicraft-ea978.firebaseapp.com",
-      databaseURL: "https://multicraft-ea978-default-rtdb.firebaseio.com",
-      projectId: "multicraft-ea978",
-      storageBucket: "multicraft-ea978.firebasestorage.app",
-      messagingSenderId: "587079793250",
-      appId: "1:587079793250:web:21d3fb74ae55eb6f5eef3b"
-    };
+  <div class="aguarde" id="aguarde">
+    Pagamento enviado.<br>
+    Aguarde a confirmação de um staff.
+  </div>
+</div>
 
-    const app = initializeApp(firebaseConfig);
-    const database = getDatabase(app);
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-    const params = new URLSearchParams(window.location.search);
-    const nick = params.get("nick");
-    const kit = params.get("kit");
-    const valor = params.get("valor");
+const firebaseConfig = {
+  apiKey: "AIzaSyASk1w8w6YzIQhkbJh7xv5BJb8ZHmG7MxM",
+  authDomain: "multicraft-ea978.firebaseapp.com",
+  databaseURL: "https://multicraft-ea978-default-rtdb.firebaseio.com",
+  projectId: "multicraft-ea978",
+  storageBucket: "multicraft-ea978.firebasestorage.app",
+  messagingSenderId: "587079793250",
+  appId: "1:587079793250:web:21d3fb74ae55eb6f5eef3b"
+};
 
-    document.getElementById("nick").innerText = nick;
-    document.getElementById("kit").innerText = kit;
-    document.getElementById("valor").innerText = valor;
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
 
-    window.confirmarPagamento = function () {
-      push(ref(database, "compras"), {
-        nick: nick,
-        kit: kit,
-        valor: valor,
-        status: "pendente",
-        data: new Date().toLocaleString()
-      });
+const params = new URLSearchParams(window.location.search);
+const nick = params.get("nick");
+const kit = params.get("kit");
+const valor = params.get("valor");
 
-      document.getElementById("aguarde").style.display = "block";
-    }
-  </script>
+document.getElementById("nick").innerText = nick;
+document.getElementById("kit").innerText = kit;
+document.getElementById("valor").innerText = valor;
+
+window.confirmarPagamento = function () {
+  push(ref(db, "compras"), {
+    nick,
+    kit,
+    valor,
+    status: "pendente",
+    data: new Date().toLocaleString()
+  });
+
+  document.getElementById("aguarde").style.display = "block";
+};
+</script>
 
 </body>
 </html>
