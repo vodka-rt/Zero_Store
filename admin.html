@@ -1,91 +1,73 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<title>Admin Panel - MultiCraft</title>
+  <meta charset="UTF-8">
+  <title>Admin Panel</title>
+  <style>
+    body {
+      background: #0e0e0e;
+      color: #fff;
+      font-family: Arial;
+      padding: 20px;
+    }
 
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-
-<style>
-body { background:#0f0f0f; color:white; font-family:Arial }
-.card { background:#1b1b1b; padding:15px; margin:10px; border-radius:8px }
-button { padding:6px 10px; margin:5px; cursor:pointer }
-.ok { background:#00c853 }
-.no { background:#d50000; color:white }
-</style>
+    button {
+      padding: 10px;
+      margin: 5px;
+      font-weight: bold;
+    }
+  </style>
 </head>
-
 <body>
-<h2>Painel Admin - Compras Pendentes</h2>
-<div id="lista">Carregando...</div>
 
 <script>
-const firebaseConfig = {
-  apiKey: "AIzaSyASk1w8w6YzIQhkbJh7xv5BJb8ZHmG7MxM",
-  authDomain: "multicraft-ea978.firebaseapp.com",
-  databaseURL: "https://multicraft-ea978-default-rtdb.firebaseio.com",
-  projectId: "multicraft-ea978",
-  storageBucket: "multicraft-ea978.firebasestorage.app",
-  messagingSenderId: "587079793250",
-  appId: "1:587079793250:web:21d3fb74ae55eb6f5eef3b"
-};
+const senhaCorreta = "MultiCraftStaff1235";
+const senha = prompt("Senha do admin:");
 
-// 🔒 impede reinicialização
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
-}
-
-const db = firebase.database();
-
-const webhookPublico = "https://discord.com/api/webhooks/1460447774993551380/nEe0VkGTtJufe23fLoEDqEf3ZrOslMHFDmftPZVY59SLtdiiYEvhxwZju4l-GsjUcCjL";
-
-db.ref("compras").on("value", snap => {
-  const lista = document.getElementById("lista");
-  lista.innerHTML = "";
-
-  if (!snap.exists()) {
-    lista.innerHTML = "Nenhuma compra pendente.";
-    return;
-  }
-
-  snap.forEach(c => {
-    const d = c.val();
-    if (d.status !== "pendente") return;
-
-    lista.innerHTML += `
-      <div class="card">
-        <b>Nick:</b> ${d.nick}<br>
-        <b>Kit:</b> ${d.kit}<br><br>
-        <button class="ok" onclick="confirmar('${c.key}','${d.nick}','${d.kit}')">Confirmar</button>
-        <button class="no" onclick="negar('${c.key}')">Negar</button>
-      </div>
-    `;
-  });
-});
-
-function confirmar(id,nick,kit){
-  db.ref("compras/"+id).update({ status:"confirmado" });
-
-  fetch(webhookPublico,{
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body: JSON.stringify({
-      embeds:[{
-        title:"✅ Compra confirmada",
-        color:65280,
-        fields:[
-          {name:"Nick",value:nick,inline:true},
-          {name:"Kit",value:kit,inline:true}
-        ]
-      }]
-    })
-  });
-}
-
-function negar(id){
-  db.ref("compras/"+id).update({ status:"negado" });
+if (senha !== senhaCorreta) {
+  alert("Acesso negado");
+  window.location.href = "index.html";
 }
 </script>
+
+<h2>🛠 Admin Panel</h2>
+
+<div id="info"></div>
+
+<button onclick="confirmar()">Confirmar Compra</button>
+<button onclick="negar()">Negar Compra</button>
+
+<script>
+const webhookPublico = "https://discord.com/api/webhooks/1460447774993551380/nEe0VkGTtJufe23fLoEDqEf3ZrOslMHFDmftPZVY59SLtdiiYEvhxwZju4l-GsjUcCjL";
+
+const dados = JSON.parse(localStorage.getItem("compraPendente"));
+
+document.getElementById("info").innerText =
+  "Nick: " + dados.nick +
+  " | Kit: " + dados.kit +
+  " | Valor: R$" + dados.valor;
+
+function confirmar() {
+  fetch(webhookPublico, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      content:
+        "✅ **COMPRA APROVADA**\n" +
+        "👤 Nick: " + dados.nick + "\n" +
+        "📦 Kit: " + dados.kit
+    })
+  });
+
+  alert("Compra confirmada!");
+  localStorage.removeItem("compraPendente");
+}
+
+function negar() {
+  alert("Compra negada!");
+  localStorage.removeItem("compraPendente");
+}
+</script>
+
 </body>
 </html>
