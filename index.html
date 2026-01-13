@@ -24,26 +24,31 @@ header {
   z-index: 10;
 }
 
-header h1 { margin: 0; color: #00ff88; }
+header h1 {
+  margin: 0;
+  color: #00ff88;
+}
 
 header button {
   margin-top: 10px;
-  padding: 8px 12px;
+  padding: 8px 14px;
   background: #00ff88;
   border: none;
   font-weight: bold;
   cursor: pointer;
 }
 
-.container {
+#loja {
   padding: 20px;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: 20px;
+  justify-content: center;
 }
 
 .kit {
   background: #1e1e1e;
+  width: 260px;
   padding: 15px;
   border-radius: 8px;
   text-align: center;
@@ -54,18 +59,10 @@ header button {
   border-radius: 6px;
 }
 
-.comps {
-  display: flex;
-  gap: 6px;
-  margin-top: 8px;
+.preco {
+  color: #00ff88;
+  font-weight: bold;
 }
-
-.comps img {
-  width: 32%;
-  border-radius: 6px;
-}
-
-.preco { color: #00ff88; font-weight: bold; }
 
 input, button {
   width: 100%;
@@ -86,6 +83,17 @@ button {
   cursor: pointer;
 }
 
+.comps {
+  display: flex;
+  gap: 5px;
+  margin-top: 8px;
+}
+
+.comps img {
+  width: 32%;
+  border-radius: 5px;
+}
+
 #pagamento, #admin {
   display: none;
   padding: 20px;
@@ -96,11 +104,10 @@ button {
   padding: 20px;
   border-radius: 8px;
 }
-
 .lista {
   background: #2a2a2a;
-  padding: 10px;
-  margin-top: 8px;
+  padding: 8px;
+  margin-top: 6px;
   border-radius: 5px;
 }
 </style>
@@ -114,31 +121,102 @@ button {
   <button onclick="abrirAdmin()">Painel Admin</button>
 </header>
 
-<!-- LOJA -->
-<div class="container" id="loja">
+<!-- LOJA (ORDEM DO MENOR PARA O MAIOR) -->
+<div id="loja">
 
+<!-- R$2 -->
+<div class="kit">
+  <img src="images/kit-dima.jpg">
+  <h3>Kit Dima</h3>
+  <p class="preco">R$2,00</p>
+  <input id="nick1" placeholder="Nick do jogador">
+  <input id="cupom1" placeholder="Cupom">
+  <button onclick="comprar('Kit Dima',2,'nick1','cupom1')">Comprar</button>
+</div>
+
+<!-- R$5 -->
+<div class="kit">
+  <img src="images/kit-cpvp.jpg">
+  <h3>Kit CPVP</h3>
+  <p class="preco">R$5,00</p>
+  <input id="nick2" placeholder="Nick do jogador">
+  <input id="cupom2" placeholder="Cupom">
+  <button onclick="comprar('Kit CPVP',5,'nick2','cupom2')">Comprar</button>
+</div>
+
+<!-- R$8 -->
+<div class="kit">
+  <img src="images/kit-dima-lendario.jpg">
+  <h3>Kit Dima Lendário</h3>
+  <p class="preco">R$8,00</p>
+  <input id="nick3" placeholder="Nick do jogador">
+  <input id="cupom3" placeholder="Cupom">
+  <button onclick="comprar('Kit Dima Lendário',8,'nick3','cupom3')">Comprar</button>
+</div>
+
+<!-- R$12 -->
+<div class="kit">
+  <img src="images/kit-ninja.jpg">
+  <h3>Kit Ninja</h3>
+  <p class="preco">R$12,00</p>
+  <input id="nick4" placeholder="Nick do jogador">
+  <input id="cupom4" placeholder="Cupom">
+  <button onclick="comprar('Kit Ninja',12,'nick4','cupom4')">Comprar</button>
+</div>
+
+<!-- R$12 -->
+<div class="kit">
+  <img src="images/kit-iloveyou.jpg">
+  <h3>Kit I Love You</h3>
+  <p class="preco">R$12,00</p>
+  <input id="nick5" placeholder="Nick do jogador">
+  <input id="cupom5" placeholder="Cupom">
+  <button onclick="comprar('Kit I Love You',12,'nick5','cupom5')">Comprar</button>
+</div>
+
+<!-- R$15 -->
+<div class="kit">
+  <img src="images/kit-god.jpg">
+  <h3>Kit God</h3>
+  <p class="preco">R$15,00</p>
+  <input id="nick6" placeholder="Nick do jogador">
+  <input id="cupom6" placeholder="Cupom">
+  <button onclick="comprar('Kit God',15,'nick6','cupom6')">Comprar</button>
+</div>
+
+<!-- R$20 -->
+<div class="kit">
+  <img src="images/kit-neve-op.jpg">
+  <h3>Kit Neve OP</h3>
+  <p class="preco">R$20,00</p>
+  <input id="nick7" placeholder="Nick do jogador">
+  <input id="cupom7" placeholder="Cupom">
+  <button onclick="comprar('Kit Neve OP',20,'nick7','cupom7')">Comprar</button>
+</div>
+
+<!-- R$25 -->
+<div class="kit">
+  <img src="images/kit-farm-op.jpg">
+  <h3>Kit Farm OP</h3>
+  <p class="preco">R$25,00</p>
+  <input id="nick8" placeholder="Nick do jogador">
+  <input id="cupom8" placeholder="Cupom">
+  <button onclick="comprar('Kit Farm OP',25,'nick8','cupom8')">Comprar</button>
+</div>
+
+<!-- R$30 -->
 <div class="kit">
   <img src="images/kit-trio.jpg">
-  <h2>Kit Trio</h2>
+  <h3>Kit Trio</h3>
   <p class="preco">R$30,00</p>
-  <input id="nick-trio" placeholder="Nick do jogador">
-  <input id="cupom-trio" placeholder="Cupom (opcional)">
-  <button onclick="comprar('Kit Trio',30,'nick-trio','cupom-trio')">Comprar</button>
-
+  <input id="nick9" placeholder="Nick do jogador">
+  <input id="cupom9" placeholder="Cupom">
+  <button onclick="comprar('Kit Trio',30,'nick9','cupom9')">Comprar</button>
   <div class="comps">
     <img src="images/comp-kit-trio.jpg">
     <img src="images/comp-kit-trio1.jpg">
     <img src="images/comp-kit-trio2.jpg">
   </div>
-</div>
-
-<div class="kit">
-  <img src="images/kit-god.jpg">
-  <h2>Kit God</h2>
-  <p class="preco">R$15,00</p>
-  <input id="nick-god" placeholder="Nick do jogador">
-  <input id="cupom-god" placeholder="Cupom (opcional)">
-  <button onclick="comprar('Kit God',15,'nick-god','cupom-god')">Comprar</button>
 </div>
 
 </div>
@@ -147,10 +225,10 @@ button {
 <div id="pagamento">
   <div class="box">
     <h2>Pagamento PIX</h2>
-    <p id="infoPagamento"></p>
+    <p id="info"></p>
     <p><b>Chave PIX:</b> SUA_CHAVE_PIX_AQUI</p>
     <button onclick="confirmar()">Confirmar pagamento</button>
-    <p id="status"></p>
+    <p id="msg"></p>
     <button onclick="voltar()">Voltar à loja</button>
   </div>
 </div>
@@ -161,8 +239,8 @@ button {
     <h2>Painel Admin</h2>
     <input id="senha" placeholder="Senha admin">
     <button onclick="entrarAdmin()">Entrar</button>
-    <div id="compras"></div>
-    <button onclick="voltar()">Voltar à loja</button>
+    <div id="listaCompras"></div>
+    <button onclick="voltar()">Voltar</button>
   </div>
 </div>
 
@@ -183,14 +261,14 @@ function comprar(kit, preco, nickId, cupomId) {
 
   document.getElementById("loja").style.display = "none";
   document.getElementById("pagamento").style.display = "block";
-  document.getElementById("infoPagamento").innerText =
+  document.getElementById("info").innerText =
     `Kit: ${kit} | Nick: ${nick} | Valor: R$${valor.toFixed(2)}`;
 }
 
 function confirmar() {
   compras.push(atual);
-  document.getElementById("status").innerText =
-    "✅ Pagamento realizado! Entre no servidor para receber seus itens.";
+  document.getElementById("msg").innerText =
+    "✅ Pagamento realizado! Entre no servidor para receber os itens.";
 }
 
 function abrirAdmin() {
@@ -205,15 +283,14 @@ function entrarAdmin() {
     return;
   }
 
-  document.getElementById("compras").innerHTML = compras.map(c =>
-    `<div class="lista">${c.nick} comprou ${c.kit} (R$${c.valor.toFixed(2)})</div>`
-  ).join("");
+  document.getElementById("listaCompras").innerHTML =
+    compras.map(c => `<div class="lista">${c.nick} → ${c.kit} (R$${c.valor.toFixed(2)})</div>`).join("");
 }
 
 function voltar() {
   document.getElementById("admin").style.display = "none";
   document.getElementById("pagamento").style.display = "none";
-  document.getElementById("loja").style.display = "grid";
+  document.getElementById("loja").style.display = "flex";
 }
 </script>
 
