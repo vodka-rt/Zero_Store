@@ -4,13 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Infinity Craft • Admin</title>
+
+  <link rel="icon" href="data:,">
   <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
   <div class="container">
     <div class="topbar">
       <div>
-        <div style="font-weight:900;font-size:18px">Infinity Craft</div>
+        <div style="font-weight:900;font-size:18px" id="siteName">Infinity Craft</div>
         <div class="small">Admin Panel (Supabase)</div>
       </div>
       <div class="row">
@@ -19,6 +21,7 @@
       </div>
     </div>
 
+    <!-- LOGIN -->
     <section class="card" id="loginCard">
       <h2 style="margin:0">Entrar</h2>
       <div class="small">Login por email/senha do Supabase Auth.</div>
@@ -37,13 +40,37 @@
       </div>
     </section>
 
+    <!-- DASH -->
     <section id="dash" class="hidden">
+
+      <!-- CONFIG DO SITE + PIX -->
       <div class="card" style="margin-top:14px">
         <div class="row">
-          <h2 style="margin:0">Config PIX</h2>
+          <h2 style="margin:0">Configurações</h2>
           <span class="badge" id="adminEmail">—</span>
         </div>
+
         <div class="hr"></div>
+
+        <h3 style="margin:0 0 6px">Visual do site</h3>
+        <div class="small">Você pode mudar nome, banner e cores sem editar código.</div>
+
+        <div class="label">Nome do site</div>
+        <input id="siteNameInput" class="input" placeholder="Infinity Craft">
+
+        <div class="label">Banner (URL)</div>
+        <input id="bannerUrlInput" class="input" placeholder="https://...png">
+
+        <div class="label">Cor primária (hex)</div>
+        <input id="themePrimaryInput" class="input" placeholder="#7c3aed">
+
+        <div class="label">Cor secundária (hex)</div>
+        <input id="themeSecondaryInput" class="input" placeholder="#8b5cf6">
+
+        <div class="hr"></div>
+
+        <h3 style="margin:0 0 6px">PIX</h3>
+        <div class="small">A chave aparece no checkout assim que o pedido é gerado.</div>
 
         <div class="label">Chave PIX</div>
         <input id="pixKey" class="input" placeholder="Sua chave PIX">
@@ -58,27 +85,36 @@
         </div>
       </div>
 
+      <!-- KITS -->
       <div class="card" style="margin-top:14px">
         <div class="row">
           <h2 style="margin:0">Kits</h2>
           <button class="btn" id="btnNewKit">Novo Kit</button>
         </div>
+
         <div id="kitForm" class="hidden" style="margin-top:12px">
           <div class="hr"></div>
+
           <input id="kitId" class="input hidden">
+
           <div class="label">Nome</div>
           <input id="kitName" class="input">
+
           <div class="label">Preço (R$)</div>
           <input id="kitPrice" class="input" type="number" step="0.01">
+
           <div class="label">Foto (URL)</div>
           <input id="kitImage" class="input" placeholder="https://...png">
+
           <div class="label">Descrição</div>
           <textarea id="kitDesc" class="input"></textarea>
+
           <div class="label">Ativo?</div>
           <select id="kitActive">
             <option value="true">Sim</option>
             <option value="false">Não</option>
           </select>
+
           <div class="hr"></div>
           <div class="row">
             <button class="btn" id="btnSaveKit">Salvar</button>
@@ -89,12 +125,21 @@
         </div>
 
         <div class="hr"></div>
+
         <table class="table">
-          <thead><tr><th>Nome</th><th>Preço</th><th>Ativo</th><th>Ações</th></tr></thead>
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Preço</th>
+              <th>Ativo</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
           <tbody id="kitsTbody"></tbody>
         </table>
       </div>
 
+      <!-- CUPONS -->
       <div class="card" style="margin-top:14px">
         <div class="row">
           <h2 style="margin:0">Cupons</h2>
@@ -103,22 +148,30 @@
 
         <div id="couponForm" class="hidden" style="margin-top:12px">
           <div class="hr"></div>
+
           <input id="couponId" class="input hidden">
+
           <div class="label">Código</div>
           <input id="couponCode" class="input" placeholder="INFINITY10">
+
           <div class="label">Tipo</div>
           <select id="couponType">
             <option value="percent">Percentual (%)</option>
             <option value="fixed">Valor fixo (R$)</option>
           </select>
+
           <div class="label">Valor</div>
           <input id="couponValue" class="input" type="number" step="0.01">
+
           <div class="label">Mínimo (R$)</div>
           <input id="couponMin" class="input" type="number" step="0.01">
+
           <div class="label">Máximo de usos</div>
           <input id="couponMax" class="input" type="number" step="1">
+
           <div class="label">Expira em (opcional)</div>
           <input id="couponExpire" class="input" type="date">
+
           <div class="label">Ativo?</div>
           <select id="couponActive">
             <option value="true">Sim</option>
@@ -135,20 +188,42 @@
         </div>
 
         <div class="hr"></div>
+
         <table class="table">
-          <thead><tr><th>Código</th><th>Tipo</th><th>Valor</th><th>Ativo</th><th>Ações</th></tr></thead>
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Tipo</th>
+              <th>Valor</th>
+              <th>Ativo</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
           <tbody id="couponsTbody"></tbody>
         </table>
       </div>
 
+      <!-- PEDIDOS -->
       <div class="card" style="margin-top:14px">
         <div class="row">
           <h2 style="margin:0">Pedidos</h2>
           <button class="btn btn-ghost" id="btnRefreshOrders">Atualizar</button>
         </div>
+
         <div class="hr"></div>
+
         <table class="table">
-          <thead><tr><th>Data</th><th>Player</th><th>Discord</th><th>Kit</th><th>Total</th><th>Status</th><th>Ações</th></tr></thead>
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Player</th>
+              <th>Discord</th>
+              <th>Kit</th>
+              <th>Total</th>
+              <th>Status</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
           <tbody id="ordersTbody"></tbody>
         </table>
       </div>
