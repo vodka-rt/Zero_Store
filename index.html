@@ -4,13 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Infinity Craft • Loja</title>
+
+  <link rel="icon" href="data:,">
   <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
   <div class="container">
     <div class="topbar">
       <div>
-        <div style="font-weight:900;font-size:18px">Infinity Craft</div>
+        <div style="font-weight:900;font-size:18px" id="siteName">Infinity Craft</div>
         <div class="small">Loja oficial do servidor</div>
       </div>
       <div class="row">
@@ -21,7 +23,11 @@
     </div>
 
     <section class="hero">
-      <img src="https://cdn.discordapp.com/attachments/1441242242395410445/1461754789778948208/4_Sem_Titulo_20260116123209.png?ex=696bb4bb&is=696a633b&hm=e110c366fb7a9427db1d788535847e69f9280fcc55271a0226a09a422660fa50&" alt="Infinity banner">
+      <img
+        id="bannerImg"
+        src="https://via.placeholder.com/1200x400?text=Infinity+Craft"
+        alt="Infinity banner"
+      >
       <h1>Compre kits e apoie o servidor</h1>
       <p>Escolha um kit, informe seu nick e Discord, pague no PIX e aguarde o staff aceitar.</p>
     </section>
@@ -34,8 +40,18 @@
       <div class="grid" id="kitsGrid"></div>
     </section>
 
-    <footer>© Infinity Craft • Loja</footer>
+    <footer>© <span id="siteNameFooter">Infinity Craft</span> • Loja</footer>
   </div>
+
+  <script>
+    // espelha o nome do topo no rodapé (o app.js vai mudar o topo)
+    const obs = new MutationObserver(()=>{
+      const top = document.getElementById("siteName");
+      const foot = document.getElementById("siteNameFooter");
+      if(top && foot) foot.textContent = top.textContent;
+    });
+    obs.observe(document.getElementById("siteName"), { childList:true, subtree:true });
+  </script>
 
   <script type="module" src="assets/app.js"></script>
 </body>
