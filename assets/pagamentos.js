@@ -13,7 +13,10 @@ const urlParams = new URLSearchParams(window.location.search);
 const kitId = urlParams.get("kit");
 
 function formatBRL(cents){
-  return (cents/100).toLocaleString("pt-BR", { style:"currency", currency:"BRL" });
+  return (cents / 100).toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  });
 }
 
 async function loadPage(){
@@ -30,28 +33,29 @@ async function loadPage(){
     pixMessage.textContent = settings.pix_message || "";
   }
 
-  // 🔹 Buscar kit
   if(!kitId){
-    kitInfo.textContent = "Kit inválido.";
+    kitInfo.textContent = "Produto inválido.";
     confirmBtn.disabled = true;
     return;
   }
 
-  const { data: kit } = await supabase
+  // 🔹 Buscar produto
+  const { data: product } = await supabase
     .from("kits")
     .select("*")
     .eq("id", kitId)
     .single();
 
-  if(!kit){
-    kitInfo.textContent = "Kit não encontrado.";
+  if(!product){
+    kitInfo.textContent = "Produto não encontrado.";
     confirmBtn.disabled = true;
     return;
   }
 
   kitInfo.innerHTML = `
-    <b>Kit:</b> ${kit.name}<br>
-    <b>Valor:</b> ${formatBRL(kit.price_cents)}
+    <b>Produto:</b> ${product.name}<br>
+    <b>Categoria:</b> ${product.category}<br>
+    <b>Valor:</b> ${formatBRL(product.price_cents)}
   `;
 
   confirmBtn.addEventListener("click", async () => {
@@ -70,8 +74,8 @@ async function loadPage(){
     const { error } = await supabase.from("orders").insert({
       player_name: player,
       discord_user: discord,
-      kit_name: kit.name,
-      total_cents: kit.price_cents,
+      kit_name: product.name,
+      total_cents: product.price_cents,
       status: "PENDING",
       pix_confirmed: true
     });
@@ -79,10 +83,24 @@ async function loadPage(){
     if(error){
       statusEl.textContent = error.message;
       confirmBtn.disabled = false;
-    } else {
-      statusEl.textContent = "Pedido enviado com sucesso! Aguarde aprovação.";
+      return;
     }
 
+    statusEl.innerHTML = `
+      <div style="margin-top:15px;padding:15px;border-radius:15px;background:#111;border:1px solid #222;">
+        <h3>Pedido enviado ✅</h3>
+        <p>Agora:</p>
+        <ul>
+          <li>Abra um ticket no Discord</li>
+          <li>Envie o comprovante</li>
+          <li>Marque algum administrador</li>
+          <li>Aguarde para resgatar seu produto</li>
+        </ul>
+        <b>Obrigado por comprar na Zero MC!</b>
+      </div>
+    `;
+
+    confirmBtn.style.display = "none";
   });
 
 }
