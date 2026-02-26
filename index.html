@@ -1,29 +1,37 @@
-<!doctype html>
-<html lang="pt-br">
+<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ZeroMc Store</title>
+
 <link rel="stylesheet" href="assets/style.css">
 <script type="module" src="assets/app.js"></script>
 </head>
 <body>
-  <div class="container">
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
-      <div>
-        <h1 style="margin:0;">ZeroMc Store</h1>
-        <div class="small">Bedrock • Semi Anarquia • Loja oficial</div>
-      </div>
-      <a class="btn" href="admin.html">Admin</a>
-    </div>
 
-    <div id="bannerBox" style="margin-top:18px;"></div>
+<div class="container">
 
-    <div style="margin-top:18px;" class="card">
-      <h2 style="margin:0 0 10px 0;">Kits</h2>
-      <div id="kits" class="grid"></div>
-      <div class="small" style="margin-top:14px;">© 2025 ZeroMc Store • Créditos a RT</div>
+  <div style="display:flex;justify-content:space-between;align-items:center;">
+    <div>
+      <h1 style="margin:0;">ZeroMc Store</h1>
+      <div class="small">Bedrock • Semi Anarquia</div>
     </div>
+    <a href="admin.html" class="btn">Admin</a>
   </div>
+
+  <div id="bannerBox" style="margin-top:20px;"></div>
+
+  <div class="card" style="margin-top:20px;">
+    <h2>Kits</h2>
+    <div id="kitsContainer" class="grid"></div>
+  </div>
+
+  <div class="small" style="margin-top:20px;">
+    © 2025 ZeroMc Store • Créditos a RT
+  </div>
+
+</div>
+
 </body>
 </html>
