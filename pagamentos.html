@@ -1,94 +1,49 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Infinity Craft • Pagamento PIX</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pagamento - ZeroMc Store</title>
 
-  <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/style.css">
+<script type="module" src="assets/pagamentos.js"></script>
 </head>
 <body>
-  <div class="container">
-    <div class="topbar">
-      <div>
-        <div style="font-weight:900;font-size:18px" id="siteName">Infinity Craft</div>
-        <div class="small">Checkout PIX</div>
-      </div>
-      <div class="row">
-        <a class="btn btn-ghost" href="index.html">Voltar</a>
-        <a class="btn btn-ghost" href="https://discord.gg/kJVefNZn6m" target="_blank">Discord</a>
-      </div>
-    </div>
 
-    <div class="grid" style="grid-template-columns:1.15fr .85fr">
-      <div class="card">
-        <h2 style="margin:0">Finalizar pedido</h2>
-        <div class="small">Preencha nick e usuário do Discord para o staff confirmar.</div>
-        <div class="hr"></div>
+<div class="container">
 
-        <div class="label">Kit</div>
-        <div class="toast" id="kitBox">Carregando…</div>
+  <a href="index.html" class="btn">← Voltar</a>
 
-        <div class="label">Nick (Minecraft)</div>
-        <input id="playerName" class="input" placeholder="SeuNick123" maxlength="32">
+  <div class="card" style="margin-top:20px;">
+    <h2>Pagamento</h2>
 
-        <div class="label">Usuário do Discord</div>
-        <input id="discordUser" class="input" placeholder="@seunome ou Nome#1234" maxlength="64">
+    <div id="kitInfo" class="small"></div>
 
-        <div class="label">Cupom (opcional)</div>
-        <div class="row" style="flex-wrap:nowrap">
-          <input id="couponCode" class="input" placeholder="INFINITY10" style="flex:1">
-          <button class="btn btn-ghost" id="btnApply">Aplicar</button>
-        </div>
-        <div class="small" id="couponMsg" style="margin-top:8px"></div>
+    <hr style="border:0;border-top:1px solid #222;margin:15px 0;">
 
-        <div class="hr"></div>
-        <div class="row">
-          <div>
-            <div class="small">Total</div>
-            <div class="price" id="totalPrice">—</div>
-          </div>
-          <button class="btn" id="btnCreateOrder">Gerar PIX</button>
-        </div>
+    <input id="player_name" class="input" placeholder="Seu nick no Minecraft">
+    <br><br>
+    <input id="discord_user" class="input" placeholder="Seu @ do Discord">
+    <br><br>
 
-        <div id="orderArea" class="hidden" style="margin-top:14px">
-          <div class="toast">
-            <b>Status:</b> <span id="orderStatus">Aguardando staff</span><br>
-            <span class="small">Pedido ID: <span id="orderId"></span></span>
-          </div>
+    <div class="small">Chave PIX</div>
+    <div id="pixKeyBox" class="card" style="padding:10px;margin-top:5px;"></div>
 
-          <div class="label">Chave PIX</div>
-          <div class="copybox">
-            <code id="pixKey">Carregando…</code>
-            <button class="btn btn-ghost" id="btnCopyPix">Copiar</button>
-          </div>
+    <div id="pixMessage" class="small" style="margin-top:10px;"></div>
 
-          <div class="label">Mensagem</div>
-          <div class="toast small" id="pixMessage">—</div>
-        </div>
-      </div>
+    <button id="confirmPaymentBtn" class="btn btn-primary" style="width:100%;margin-top:15px;">
+      Já paguei
+    </button>
 
-      <div class="card">
-        <h3 style="margin:0">Como concluir</h3>
-        <div class="hr"></div>
-        <ol class="small" style="margin:0;padding-left:18px;line-height:1.5">
-          <li>Gere o PIX.</li>
-          <li>Pague usando a chave.</li>
-          <li>Avise no Discord com o <b>ID do pedido</b>.</li>
-          <li>Staff aceita e entrega.</li>
-        </ol>
+    <div id="status" class="small" style="margin-top:10px;"></div>
 
-        <div class="hr"></div>
-        <div class="small">
-          Dica: use o botão <b>Copiar</b> para colar a chave PIX no app do banco.
-        </div>
-      </div>
-    </div>
-
-    <footer>© Infinity Craft • Checkout</footer>
   </div>
 
-  <script type="module" src="assets/pagamentos.js"></script>
+  <div class="small" style="margin-top:20px;">
+    © 2025 ZeroMc Store • Créditos a RT
+  </div>
+
+</div>
+
 </body>
 </html>
