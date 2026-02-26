@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ZeroMc Store</title>
+<title>Zero MC Store</title>
 
 <link rel="stylesheet" href="assets/style.css">
 <script type="module" src="assets/app.js"></script>
@@ -14,21 +14,66 @@
 
   <div style="display:flex;justify-content:space-between;align-items:center;">
     <div>
-      <h1 style="margin:0;">ZeroMc Store</h1>
+      <h1 style="margin:0;">Zero MC Store</h1>
       <div class="small">Bedrock • Semi Anarquia</div>
     </div>
     <a href="admin.html" class="btn">Admin</a>
   </div>
 
-  <div id="bannerBox" style="margin-top:20px;"></div>
+  <!-- MENU CATEGORIAS -->
+  <div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap;">
+    <button class="btn" onclick="showCategory('kits')">Kits</button>
+    <button class="btn" onclick="showCategory('vips')">VIPs</button>
+    <button class="btn" onclick="showCategory('bases')">Bases</button>
+    <button class="btn" onclick="toggleTerms()">Termos</button>
+  </div>
 
-  <div class="card" style="margin-top:20px;">
+  <!-- CATEGORIAS -->
+  <div id="kits" class="card category" style="margin-top:20px;">
     <h2>Kits</h2>
     <div id="kitsContainer" class="grid"></div>
   </div>
 
+  <div id="vips" class="card category hidden" style="margin-top:20px;">
+    <h2>VIPs</h2>
+    <div id="vipsContainer" class="grid"></div>
+  </div>
+
+  <div id="bases" class="card category hidden" style="margin-top:20px;">
+    <h2>Bases</h2>
+    <div id="basesContainer" class="grid"></div>
+  </div>
+
+  <!-- TERMOS -->
+  <div id="termsBox" class="card hidden" style="margin-top:20px;">
+    <h2>Termos de Compra</h2>
+
+<pre style="white-space:pre-wrap;font-family:inherit;">
+# TERMOS DE COMPRAS DA ZERO MC 
+
+- PARA COMPRAR BASTA ABRIR UM TICKET NO DISCORD
+
+- SOMOS 100% CONFIÁVEIS 
+
+- ENTREGAMOS ASSIM QUE FIZER O PAGAMENTO (APÓS ATENDIMENTO)
+
+- NÃO FAZEMOS REEMBOLSOS 
+
+- ATENDEMOS EM QUALQUER HORÁRIO (CASO TENHA VENDEDORES ATIVOS)
+
+- CASO PERCA O KIT NÃO NOS RESPONSABILIZAMOS 
+
+- ACEITAMOS APENAS PAGAMENTOS PIX 
+
+- CASO SEJA BANIDO NÃO DEVOLVEREMOS OS KITS PERDIDOS 
+
+***Ao comprar conosco você concorda totalmente com os termos.***
+</pre>
+
+  </div>
+
   <div class="small" style="margin-top:20px;">
-    © 2025 ZeroMc Store • Créditos a RT
+    © 2025 Zero MC • Créditos a RT
   </div>
 
 </div>
