@@ -1,237 +1,123 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Infinity Craft • Admin</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ZeroMc Store - Admin</title>
 
-  <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/style.css" />
+
+<script type="module" src="assets/admin.js"></script>
+
+<style>
+.hidden{display:none;}
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+}
+.footer{
+  text-align:center;
+  margin-top:40px;
+  font-size:12px;
+  color:#777;
+}
+</style>
 </head>
+
 <body>
-  <div class="container">
-    <div class="topbar">
-      <div>
-        <div style="font-weight:900;font-size:18px" id="siteName">Infinity Craft</div>
-        <div class="small">Admin Panel (Supabase)</div>
-      </div>
-      <div class="row">
-        <a class="btn btn-ghost" href="index.html">Voltar</a>
-        <button class="btn btn-ghost hidden" id="btnLogout">Sair</button>
-      </div>
+
+<div class="container">
+
+  <div class="header">
+    <h1>ZeroMc Store</h1>
+    <div>
+      <button id="btnLogout" class="btn hidden">Sair</button>
     </div>
-
-    <!-- LOGIN -->
-    <section class="card" id="loginCard">
-      <h2 style="margin:0">Entrar</h2>
-      <div class="small">Login por email/senha do Supabase Auth.</div>
-      <div class="hr"></div>
-
-      <div class="label">Email</div>
-      <input id="email" class="input" value="diogojoaquimdemelosantana@gmail.com">
-
-      <div class="label">Senha</div>
-      <input id="password" class="input" type="password" placeholder="••••••••">
-
-      <div class="hr"></div>
-      <div class="row">
-        <button class="btn" id="btnLogin">Entrar</button>
-        <div class="small" id="loginMsg"></div>
-      </div>
-    </section>
-
-    <!-- DASH -->
-    <section id="dash" class="hidden">
-
-      <!-- CONFIG DO SITE + PIX -->
-      <div class="card" style="margin-top:14px">
-        <div class="row">
-          <h2 style="margin:0">Configurações</h2>
-          <span class="badge" id="adminEmail">—</span>
-        </div>
-
-        <div class="hr"></div>
-
-        <h3 style="margin:0 0 6px">Visual do site</h3>
-        <div class="small">Você pode mudar nome, banner e cores sem editar código.</div>
-
-        <div class="label">Nome do site</div>
-        <input id="siteNameInput" class="input" placeholder="Infinity Craft">
-
-        <div class="label">Banner (URL)</div>
-        <input id="bannerUrlInput" class="input" placeholder="https://...png">
-
-        <div class="label">Cor primária (hex)</div>
-        <input id="themePrimaryInput" class="input" placeholder="#7c3aed">
-
-        <div class="label">Cor secundária (hex)</div>
-        <input id="themeSecondaryInput" class="input" placeholder="#8b5cf6">
-
-        <div class="hr"></div>
-
-        <h3 style="margin:0 0 6px">PIX</h3>
-        <div class="small">A chave aparece no checkout assim que o pedido é gerado.</div>
-
-        <div class="label">Chave PIX</div>
-        <input id="pixKey" class="input" placeholder="Sua chave PIX">
-
-        <div class="label">Mensagem</div>
-        <textarea id="pixMessage" class="input"></textarea>
-
-        <div class="hr"></div>
-        <div class="row">
-          <button class="btn" id="btnSaveSettings">Salvar</button>
-          <div class="small" id="settingsMsg"></div>
-        </div>
-      </div>
-
-      <!-- KITS -->
-      <div class="card" style="margin-top:14px">
-        <div class="row">
-          <h2 style="margin:0">Kits</h2>
-          <button class="btn" id="btnNewKit">Novo Kit</button>
-        </div>
-
-        <div id="kitForm" class="hidden" style="margin-top:12px">
-          <div class="hr"></div>
-
-          <input id="kitId" class="input hidden">
-
-          <div class="label">Nome</div>
-          <input id="kitName" class="input">
-
-          <div class="label">Preço (R$)</div>
-          <input id="kitPrice" class="input" type="number" step="0.01">
-
-          <div class="label">Foto (URL)</div>
-          <input id="kitImage" class="input" placeholder="https://...png">
-
-          <div class="label">Descrição</div>
-          <textarea id="kitDesc" class="input"></textarea>
-
-          <div class="label">Ativo?</div>
-          <select id="kitActive">
-            <option value="true">Sim</option>
-            <option value="false">Não</option>
-          </select>
-
-          <div class="hr"></div>
-          <div class="row">
-            <button class="btn" id="btnSaveKit">Salvar</button>
-            <button class="btn btn-ghost" id="btnCancelKit">Cancelar</button>
-            <button class="btn btn-ghost" id="btnDeleteKit">Excluir</button>
-            <div class="small" id="kitMsg"></div>
-          </div>
-        </div>
-
-        <div class="hr"></div>
-
-        <table class="table">
-          <thead>
-            <tr>
-              <th>Nome</th>
-              <th>Preço</th>
-              <th>Ativo</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody id="kitsTbody"></tbody>
-        </table>
-      </div>
-
-      <!-- CUPONS -->
-      <div class="card" style="margin-top:14px">
-        <div class="row">
-          <h2 style="margin:0">Cupons</h2>
-          <button class="btn" id="btnNewCoupon">Novo Cupom</button>
-        </div>
-
-        <div id="couponForm" class="hidden" style="margin-top:12px">
-          <div class="hr"></div>
-
-          <input id="couponId" class="input hidden">
-
-          <div class="label">Código</div>
-          <input id="couponCode" class="input" placeholder="INFINITY10">
-
-          <div class="label">Tipo</div>
-          <select id="couponType">
-            <option value="percent">Percentual (%)</option>
-            <option value="fixed">Valor fixo (R$)</option>
-          </select>
-
-          <div class="label">Valor</div>
-          <input id="couponValue" class="input" type="number" step="0.01">
-
-          <div class="label">Mínimo (R$)</div>
-          <input id="couponMin" class="input" type="number" step="0.01">
-
-          <div class="label">Máximo de usos</div>
-          <input id="couponMax" class="input" type="number" step="1">
-
-          <div class="label">Expira em (opcional)</div>
-          <input id="couponExpire" class="input" type="date">
-
-          <div class="label">Ativo?</div>
-          <select id="couponActive">
-            <option value="true">Sim</option>
-            <option value="false">Não</option>
-          </select>
-
-          <div class="hr"></div>
-          <div class="row">
-            <button class="btn" id="btnSaveCoupon">Salvar</button>
-            <button class="btn btn-ghost" id="btnCancelCoupon">Cancelar</button>
-            <button class="btn btn-ghost" id="btnDeleteCoupon">Excluir</button>
-            <div class="small" id="couponMsg"></div>
-          </div>
-        </div>
-
-        <div class="hr"></div>
-
-        <table class="table">
-          <thead>
-            <tr>
-              <th>Código</th>
-              <th>Tipo</th>
-              <th>Valor</th>
-              <th>Ativo</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody id="couponsTbody"></tbody>
-        </table>
-      </div>
-
-      <!-- PEDIDOS -->
-      <div class="card" style="margin-top:14px">
-        <div class="row">
-          <h2 style="margin:0">Pedidos</h2>
-          <button class="btn btn-ghost" id="btnRefreshOrders">Atualizar</button>
-        </div>
-
-        <div class="hr"></div>
-
-        <table class="table">
-          <thead>
-            <tr>
-              <th>Data</th>
-              <th>Player</th>
-              <th>Discord</th>
-              <th>Kit</th>
-              <th>Total</th>
-              <th>Status</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody id="ordersTbody"></tbody>
-        </table>
-      </div>
-
-      <footer>© Infinity Craft • Admin</footer>
-    </section>
   </div>
 
-  <script type="module" src="assets/admin.js"></script>
+  <!-- LOGIN -->
+  <div id="loginCard" class="card">
+    <h2>Entrar</h2>
+    <p class="small">Login por email/senha do Supabase Auth.</p>
+
+    <input id="email" class="input" placeholder="Email" />
+    <br><br>
+    <input id="password" type="password" class="input" placeholder="Senha" />
+    <br><br>
+
+    <button id="btnLogin" class="btn btn-primary">Entrar</button>
+
+    <div id="loginMsg" class="small" style="margin-top:10px;color:#f87171;"></div>
+  </div>
+
+  <!-- PAINEL (COMEÇA ESCONDIDO) -->
+  <div id="dash" class="hidden">
+
+    <div class="card">
+      <h2>Configurações</h2>
+
+      <label>Nome do site</label>
+      <input id="siteNameInput" class="input" placeholder="ZeroMc Store" />
+
+      <br><br>
+
+      <label>Banner (URL)</label>
+      <input id="bannerUrlInput" class="input" placeholder="https://..." />
+
+      <br><br>
+
+      <label>Cor primária (hex)</label>
+      <input id="themePrimaryInput" class="input" value="#111111" />
+
+      <br><br>
+
+      <label>Cor secundária (hex)</label>
+      <input id="themeSecondaryInput" class="input" value="#3a3a3a" />
+
+      <br><br>
+
+      <label>Chave PIX</label>
+      <input id="pixKey" class="input" placeholder="Sua chave PIX" />
+
+      <br><br>
+
+      <label>Mensagem PIX</label>
+      <input id="pixMessage" class="input" placeholder="Mensagem após pagamento" />
+
+      <br><br>
+
+      <button id="btnSaveSettings" class="btn btn-primary">Salvar</button>
+
+      <div id="settingsMsg" class="small" style="margin-top:10px;"></div>
+    </div>
+
+    <br>
+
+    <div class="card">
+      <h2>Kits</h2>
+      <table width="100%">
+        <tbody id="kitsTbody"></tbody>
+      </table>
+    </div>
+
+    <br>
+
+    <div class="card">
+      <h2>Pedidos</h2>
+      <table width="100%">
+        <tbody id="ordersTbody"></tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    © 2025 ZeroMc Store • Créditos a RT
+  </div>
+
+</div>
+
 </body>
 </html>
