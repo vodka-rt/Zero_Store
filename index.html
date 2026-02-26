@@ -1,58 +1,29 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Infinity Craft • Loja</title>
-
-  <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="assets/style.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ZeroMc Store</title>
+<link rel="stylesheet" href="assets/style.css">
+<script type="module" src="assets/app.js"></script>
 </head>
 <body>
   <div class="container">
-    <div class="topbar">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
       <div>
-        <div style="font-weight:900;font-size:18px" id="siteName">Infinity Craft</div>
-        <div class="small">Loja oficial do servidor</div>
+        <h1 style="margin:0;">ZeroMc Store</h1>
+        <div class="small">Bedrock • Semi Anarquia • Loja oficial</div>
       </div>
-      <div class="row">
-        <span class="badge">Bedrock • Semi Anarquia</span>
-        <a class="btn btn-ghost" href="https://discord.gg/kJVefNZn6m" target="_blank">Discord</a>
-        <a class="btn btn-ghost" href="admin.html">Admin</a>
-      </div>
+      <a class="btn" href="admin.html">Admin</a>
     </div>
 
-    <section class="hero">
-      <img
-        id="bannerImg"
-        src="https://via.placeholder.com/1200x400?text=Infinity+Craft"
-        alt="Infinity banner"
-      >
-      <h1>Compre kits e apoie o servidor</h1>
-      <p>Escolha um kit, informe seu nick e Discord, pague no PIX e aguarde o staff aceitar.</p>
-    </section>
+    <div id="bannerBox" style="margin-top:18px;"></div>
 
-    <section style="margin-top:14px">
-      <div class="row">
-        <h2 style="margin:0">Kits</h2>
-        <span class="badge" id="kitCount">Carregando…</span>
-      </div>
-      <div class="grid" id="kitsGrid"></div>
-    </section>
-
-    <footer>© <span id="siteNameFooter">Infinity Craft</span> • Loja</footer>
+    <div style="margin-top:18px;" class="card">
+      <h2 style="margin:0 0 10px 0;">Kits</h2>
+      <div id="kits" class="grid"></div>
+      <div class="small" style="margin-top:14px;">© 2025 ZeroMc Store • Créditos a RT</div>
+    </div>
   </div>
-
-  <script>
-    // espelha o nome do topo no rodapé (o app.js vai mudar o topo)
-    const obs = new MutationObserver(()=>{
-      const top = document.getElementById("siteName");
-      const foot = document.getElementById("siteNameFooter");
-      if(top && foot) foot.textContent = top.textContent;
-    });
-    obs.observe(document.getElementById("siteName"), { childList:true, subtree:true });
-  </script>
-
-  <script type="module" src="assets/app.js"></script>
 </body>
 </html>
