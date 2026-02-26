@@ -7,42 +7,51 @@
 
 <link rel="stylesheet" href="assets/style.css">
 <script type="module" src="assets/admin.js"></script>
-
-<style>
-.hidden{display:none;}
-.container{max-width:1000px;margin:auto;padding:20px;}
-.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
-.footer{text-align:center;margin-top:40px;font-size:12px;color:#777;}
-table{width:100%;border-collapse:collapse;}
-td{padding:10px;border-bottom:1px solid #222;}
-textarea{width:100%;padding:10px;border-radius:10px;background:#111;border:1px solid #222;color:white;}
-</style>
 </head>
-
 <body>
 
 <div class="container">
 
-  <div class="header">
-    <h1>ZeroMc Store</h1>
-    <button id="btnLogout" class="btn hidden">Sair</button>
-  </div>
+  <h1>ZeroMc Store • Admin</h1>
 
   <!-- LOGIN -->
   <div id="loginCard" class="card">
-    <h2>Entrar</h2>
     <input id="email" class="input" placeholder="Email">
     <br><br>
     <input id="password" type="password" class="input" placeholder="Senha">
     <br><br>
     <button id="btnLogin" class="btn btn-primary">Entrar</button>
-    <div id="loginMsg" class="small" style="margin-top:10px;color:#f87171;"></div>
+    <div id="loginMsg" class="small"></div>
   </div>
 
-  <!-- DASHBOARD -->
+  <!-- DASH -->
   <div id="dash" class="hidden">
 
-    <div class="card">
+    <button id="btnLogout" class="btn">Sair</button>
+
+    <div class="card" style="margin-top:20px;">
+      <h2>Configurações</h2>
+
+      <input id="siteNameInput" class="input" placeholder="Nome da Loja">
+      <br><br>
+
+      <input id="themePrimaryInput" class="input" placeholder="Cor 1 (ex: #111111)">
+      <br><br>
+
+      <input id="themeSecondaryInput" class="input" placeholder="Cor 2 (ex: #3a3a3a)">
+      <br><br>
+
+      <input id="pixKey" class="input" placeholder="Chave PIX">
+      <br><br>
+
+      <input id="pixMessage" class="input" placeholder="Mensagem após pagamento">
+      <br><br>
+
+      <button id="btnSaveSettings" class="btn btn-primary">Salvar Configurações</button>
+      <div id="settingsMsg" class="small"></div>
+    </div>
+
+    <div class="card" style="margin-top:20px;">
       <h2>Adicionar Kit</h2>
 
       <input id="newKitName" class="input" placeholder="Nome do Kit">
@@ -54,34 +63,23 @@ textarea{width:100%;padding:10px;border-radius:10px;background:#111;border:1px s
       <input id="newKitImage" class="input" placeholder="URL da Imagem">
       <br><br>
 
-      <textarea id="newKitDesc" placeholder="Descrição do Kit"></textarea>
+      <textarea id="newKitDesc" class="input" placeholder="Descrição do Kit"></textarea>
       <br><br>
 
       <button id="btnCreateKit" class="btn btn-primary">Adicionar Kit</button>
+      <div id="kitMsg" class="small"></div>
     </div>
 
-    <br>
-
-    <div class="card">
+    <div class="card" style="margin-top:20px;">
       <h2>Kits</h2>
-      <table>
-        <tbody id="kitsTbody"></tbody>
-      </table>
+      <div id="kitsList"></div>
     </div>
 
-    <br>
-
-    <div class="card">
+    <div class="card" style="margin-top:20px;">
       <h2>Pedidos</h2>
-      <table>
-        <tbody id="ordersTbody"></tbody>
-      </table>
+      <div id="ordersList"></div>
     </div>
 
-  </div>
-
-  <div class="footer">
-    © 2025 ZeroMc Store • Créditos a RT
   </div>
 
 </div>
