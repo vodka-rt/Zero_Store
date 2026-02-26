@@ -52,65 +52,40 @@ async function refreshSession() {
   dash.classList.remove("hidden");
   btnLogout.classList.remove("hidden");
 
-  loadSettings();
   loadKits();
   loadOrders();
 }
 
 refreshSession();
 
-/* ================= CONFIG ================= */
-
-const siteNameInput = document.getElementById("siteNameInput");
-const bannerUrlInput = document.getElementById("bannerUrlInput");
-const themePrimaryInput = document.getElementById("themePrimaryInput");
-const themeSecondaryInput = document.getElementById("themeSecondaryInput");
-const pixKey = document.getElementById("pixKey");
-const pixMessage = document.getElementById("pixMessage");
-const btnSaveSettings = document.getElementById("btnSaveSettings");
-const settingsMsg = document.getElementById("settingsMsg");
-
-async function loadSettings() {
-  const { data } = await supabase
-    .from("settings")
-    .select("*")
-    .eq("key", "public")
-    .single();
-
-  if (!data) return;
-
-  siteNameInput.value = data.site_name || "";
-  bannerUrlInput.value = data.banner_url || "";
-  themePrimaryInput.value = data.theme_primary || "#111111";
-  themeSecondaryInput.value = data.theme_secondary || "#3a3a3a";
-  pixKey.value = data.pix_key || "";
-  pixMessage.value = data.pix_message || "";
-}
-
-btnSaveSettings.addEventListener("click", async () => {
-  btnSaveSettings.disabled = true;
-
-  const payload = {
-    key: "public",
-    site_name: siteNameInput.value,
-    banner_url: bannerUrlInput.value,
-    theme_primary: themePrimaryInput.value,
-    theme_secondary: themeSecondaryInput.value,
-    pix_key: pixKey.value,
-    pix_message: pixMessage.value,
-  };
-
-  const { error } = await supabase
-    .from("settings")
-    .upsert(payload, { onConflict: "key" });
-
-  btnSaveSettings.disabled = false;
-  settingsMsg.textContent = error ? error.message : "Salvo ✅";
-});
-
 /* ================= KITS ================= */
 
 const kitsTbody = document.getElementById("kitsTbody");
+const btnCreateKit = document.getElementById("btnCreateKit");
+
+btnCreateKit.addEventListener("click", async () => {
+  const name = document.getElementById("newKitName").value;
+  const price = parseFloat(document.getElementById("newKitPrice").value);
+  const image = document.getElementById("newKitImage").value;
+  const desc = document.getElementById("newKitDesc").value;
+
+  if (!name || !price) return alert("Preencha nome e preço");
+
+  await supabase.from("kits").insert({
+    name,
+    price_cents: Math.round(price * 100),
+    image_url: image,
+    description: desc,
+    active: true
+  });
+
+  document.getElementById("newKitName").value = "";
+  document.getElementById("newKitPrice").value = "";
+  document.getElementById("newKitImage").value = "";
+  document.getElementById("newKitDesc").value = "";
+
+  loadKits();
+});
 
 async function loadKits() {
   const { data } = await supabase.from("kits").select("*");
@@ -121,7 +96,11 @@ async function loadKits() {
     const tr = document.createElement("tr");
 
     tr.innerHTML = `
-      <td>${kit.name}</td>
+      <td>
+        ${kit.image_url ? `<img src="${kit.image_url}" style="width:60px;height:60px;object-fit:cover;border-radius:8px;"><br>` : ""}
+        <strong>${kit.name}</strong><br>
+        <small>${kit.description || ""}</small>
+      </td>
       <td>R$ ${(kit.price_cents / 100).toFixed(2)}</td>
       <td>${kit.active ? "Ativo" : "Inativo"}</td>
       <td>
@@ -170,17 +149,11 @@ async function loadOrders() {
 }
 
 window.setPaid = async (id) => {
-  await supabase
-    .from("orders")
-    .update({ status: "PAID" })
-    .eq("id", id);
+  await supabase.from("orders").update({ status: "PAID" }).eq("id", id);
   loadOrders();
 };
 
 window.setDelivered = async (id) => {
-  await supabase
-    .from("orders")
-    .update({ status: "DELIVERED" })
-    .eq("id", id);
+  await supabase.from("orders").update({ status: "DELIVERED" }).eq("id", id);
   loadOrders();
 };
