@@ -1,28 +1,20 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ZeroMc Store - Admin</title>
 
-<link rel="stylesheet" href="assets/style.css" />
-
+<link rel="stylesheet" href="assets/style.css">
 <script type="module" src="assets/admin.js"></script>
 
 <style>
 .hidden{display:none;}
-.header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:20px;
-}
-.footer{
-  text-align:center;
-  margin-top:40px;
-  font-size:12px;
-  color:#777;
-}
+.container{max-width:1000px;margin:auto;padding:20px;}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+.footer{text-align:center;margin-top:40px;font-size:12px;color:#777;}
+table{width:100%;border-collapse:collapse;}
+td{padding:10px;border-bottom:1px solid #222;}
 </style>
 </head>
 
@@ -32,72 +24,61 @@
 
   <div class="header">
     <h1>ZeroMc Store</h1>
-    <div>
-      <button id="btnLogout" class="btn hidden">Sair</button>
-    </div>
+    <button id="btnLogout" class="btn hidden">Sair</button>
   </div>
 
   <!-- LOGIN -->
   <div id="loginCard" class="card">
     <h2>Entrar</h2>
-    <p class="small">Login por email/senha do Supabase Auth.</p>
-
-    <input id="email" class="input" placeholder="Email" />
+    <input id="email" class="input" placeholder="Email">
     <br><br>
-    <input id="password" type="password" class="input" placeholder="Senha" />
+    <input id="password" type="password" class="input" placeholder="Senha">
     <br><br>
-
     <button id="btnLogin" class="btn btn-primary">Entrar</button>
-
     <div id="loginMsg" class="small" style="margin-top:10px;color:#f87171;"></div>
   </div>
 
-  <!-- PAINEL (COMEÇA ESCONDIDO) -->
+  <!-- DASHBOARD -->
   <div id="dash" class="hidden">
 
     <div class="card">
       <h2>Configurações</h2>
 
-      <label>Nome do site</label>
-      <input id="siteNameInput" class="input" placeholder="ZeroMc Store" />
-
+      <input id="siteNameInput" class="input" placeholder="Nome do site">
       <br><br>
-
-      <label>Banner (URL)</label>
-      <input id="bannerUrlInput" class="input" placeholder="https://..." />
-
+      <input id="bannerUrlInput" class="input" placeholder="Banner URL">
       <br><br>
-
-      <label>Cor primária (hex)</label>
-      <input id="themePrimaryInput" class="input" value="#111111" />
-
+      <input id="themePrimaryInput" class="input" placeholder="#111111">
       <br><br>
-
-      <label>Cor secundária (hex)</label>
-      <input id="themeSecondaryInput" class="input" value="#3a3a3a" />
-
+      <input id="themeSecondaryInput" class="input" placeholder="#3a3a3a">
       <br><br>
-
-      <label>Chave PIX</label>
-      <input id="pixKey" class="input" placeholder="Sua chave PIX" />
-
+      <input id="pixKey" class="input" placeholder="Chave PIX">
       <br><br>
-
-      <label>Mensagem PIX</label>
-      <input id="pixMessage" class="input" placeholder="Mensagem após pagamento" />
-
+      <input id="pixMessage" class="input" placeholder="Mensagem PIX">
       <br><br>
 
       <button id="btnSaveSettings" class="btn btn-primary">Salvar</button>
+      <div id="settingsMsg" class="small"></div>
+    </div>
 
-      <div id="settingsMsg" class="small" style="margin-top:10px;"></div>
+    <br>
+
+    <div class="card">
+      <h2>Adicionar Kit</h2>
+
+      <input id="newKitName" class="input" placeholder="Nome do Kit">
+      <br><br>
+      <input id="newKitPrice" class="input" placeholder="Preço (ex: 29.90)">
+      <br><br>
+
+      <button id="btnCreateKit" class="btn btn-primary">Adicionar Kit</button>
     </div>
 
     <br>
 
     <div class="card">
       <h2>Kits</h2>
-      <table width="100%">
+      <table>
         <tbody id="kitsTbody"></tbody>
       </table>
     </div>
@@ -106,7 +87,7 @@
 
     <div class="card">
       <h2>Pedidos</h2>
-      <table width="100%">
+      <table>
         <tbody id="ordersTbody"></tbody>
       </table>
     </div>
