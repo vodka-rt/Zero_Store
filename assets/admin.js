@@ -14,57 +14,46 @@ const password = document.getElementById("password");
 const btnLogin = document.getElementById("btnLogin");
 const loginMsg = document.getElementById("loginMsg");
 
-btnLogin.addEventListener("click", async () => {
-
+btnLogin.onclick = async () => {
   loginMsg.textContent = "";
-  btnLogin.disabled = true;
-
   const { error } = await supabase.auth.signInWithPassword({
     email: email.value.trim(),
     password: password.value,
   });
 
-  btnLogin.disabled = false;
-
   if (error) {
     loginMsg.textContent = error.message;
   } else {
-    refreshSession();
+    checkSession();
   }
-});
+};
 
-btnLogout.addEventListener("click", async () => {
+btnLogout.onclick = async () => {
   await supabase.auth.signOut();
-  refreshSession();
-});
+  checkSession();
+};
 
-async function refreshSession() {
-
+async function checkSession() {
   const { data } = await supabase.auth.getSession();
   const user = data.session?.user;
 
   if (!user) {
     loginCard.classList.remove("hidden");
     dash.classList.add("hidden");
-    btnLogout.classList.add("hidden");
-    return;
+  } else {
+    loginCard.classList.add("hidden");
+    dash.classList.remove("hidden");
+    loadSettings();
+    loadKits();
+    loadOrders();
   }
-
-  loginCard.classList.add("hidden");
-  dash.classList.remove("hidden");
-  btnLogout.classList.remove("hidden");
-
-  loadSettings();
-  loadKits();
-  loadOrders();
 }
 
-refreshSession();
+checkSession();
 
 /* ================= SETTINGS ================= */
 
 const siteNameInput = document.getElementById("siteNameInput");
-const bannerUrlInput = document.getElementById("bannerUrlInput");
 const themePrimaryInput = document.getElementById("themePrimaryInput");
 const themeSecondaryInput = document.getElementById("themeSecondaryInput");
 const pixKey = document.getElementById("pixKey");
@@ -82,64 +71,70 @@ async function loadSettings() {
   if (!data) return;
 
   siteNameInput.value = data.site_name || "";
-  bannerUrlInput.value = data.banner_url || "";
-  themePrimaryInput.value = data.theme_primary || "#111111";
-  themeSecondaryInput.value = data.theme_secondary || "#3a3a3a";
+  themePrimaryInput.value = data.theme_primary || "";
+  themeSecondaryInput.value = data.theme_secondary || "";
   pixKey.value = data.pix_key || "";
   pixMessage.value = data.pix_message || "";
 }
 
-btnSaveSettings.addEventListener("click", async () => {
-
-  const payload = {
-    key: "public",
-    site_name: siteNameInput.value,
-    banner_url: bannerUrlInput.value,
-    theme_primary: themePrimaryInput.value,
-    theme_secondary: themeSecondaryInput.value,
-    pix_key: pixKey.value,
-    pix_message: pixMessage.value
-  };
-
+btnSaveSettings.onclick = async () => {
   const { error } = await supabase
     .from("settings")
-    .upsert(payload, { onConflict: "key" });
+    .upsert({
+      key: "public",
+      site_name: siteNameInput.value,
+      theme_primary: themePrimaryInput.value,
+      theme_secondary: themeSecondaryInput.value,
+      pix_key: pixKey.value,
+      pix_message: pixMessage.value,
+    }, { onConflict: "key" });
 
   settingsMsg.textContent = error ? error.message : "Salvo ✅";
-});
+};
 
 /* ================= KITS ================= */
 
 const kitsList = document.getElementById("kitsList");
+const btnCreateKit = document.getElementById("btnCreateKit");
+const kitMsg = document.getElementById("kitMsg");
 
-function formatBRL(cents) {
-  return (cents / 100).toLocaleString("pt-BR", {
-    style: "currency",
-    currency: "BRL",
+btnCreateKit.onclick = async () => {
+  const name = document.getElementById("newKitName").value;
+  const price = parseFloat(document.getElementById("newKitPrice").value);
+  const image = document.getElementById("newKitImage").value;
+  const desc = document.getElementById("newKitDesc").value;
+
+  if (!name || !price) {
+    kitMsg.textContent = "Preencha nome e preço";
+    return;
+  }
+
+  const { error } = await supabase.from("kits").insert({
+    name,
+    price_cents: Math.round(price * 100),
+    image_url: image,
+    description: desc,
+    active: true
   });
-}
+
+  kitMsg.textContent = error ? error.message : "Kit criado ✅";
+  loadKits();
+};
 
 async function loadKits() {
-
-  const { data } = await supabase
-    .from("kits")
-    .select("*")
-    .order("created_at", { ascending: false });
+  const { data } = await supabase.from("kits").select("*");
 
   kitsList.innerHTML = "";
 
-  data?.forEach((kit) => {
-
+  data?.forEach(kit => {
     const div = document.createElement("div");
     div.className = "card";
     div.style.marginTop = "10px";
 
     div.innerHTML = `
-      ${kit.image_url ? `<img src="${kit.image_url}" style="width:100%;max-height:200px;object-fit:cover;border-radius:10px;">` : ""}
-      <h3>${kit.name}</h3>
-      <p>${kit.description || ""}</p>
-      <b>${formatBRL(kit.price_cents)}</b>
-      <br><br>
+      <b>${kit.name}</b><br>
+      ${kit.description || ""}<br>
+      R$ ${(kit.price_cents/100).toFixed(2)}<br>
       <button onclick="deleteKit('${kit.id}')" class="btn">Excluir</button>
     `;
 
@@ -148,7 +143,6 @@ async function loadKits() {
 }
 
 window.deleteKit = async (id) => {
-  if (!confirm("Excluir kit?")) return;
   await supabase.from("kits").delete().eq("id", id);
   loadKits();
 };
@@ -158,47 +152,32 @@ window.deleteKit = async (id) => {
 const ordersList = document.getElementById("ordersList");
 
 async function loadOrders() {
-
-  const { data } = await supabase
-    .from("orders")
-    .select("*")
-    .order("created_at", { ascending: false });
+  const { data } = await supabase.from("orders").select("*");
 
   ordersList.innerHTML = "";
 
-  data?.forEach((order) => {
-
+  data?.forEach(order => {
     const div = document.createElement("div");
     div.className = "card";
     div.style.marginTop = "10px";
 
     div.innerHTML = `
-      <b>Nick:</b> ${order.player_name}<br>
-      <b>Discord:</b> ${order.discord_user}<br>
-      <b>Kit:</b> ${order.kit_name}<br>
-      <b>Valor:</b> ${formatBRL(order.total_cents)}<br>
-      <b>Status:</b> ${order.status}<br><br>
-
-      <button onclick="approveOrder('${order.id}')" class="btn">Aprovar</button>
-      <button onclick="denyOrder('${order.id}')" class="btn">Negar</button>
-      <button onclick="deliverOrder('${order.id}')" class="btn">Entregue</button>
+      ${order.player_name} - ${order.kit_name}<br>
+      ${order.status}<br>
+      <button onclick="approve('${order.id}')" class="btn">Aprovar</button>
+      <button onclick="deliver('${order.id}')" class="btn">Entregar</button>
     `;
 
     ordersList.appendChild(div);
   });
 }
 
-window.approveOrder = async (id) => {
+window.approve = async (id) => {
   await supabase.from("orders").update({ status: "PAID" }).eq("id", id);
   loadOrders();
 };
 
-window.denyOrder = async (id) => {
-  await supabase.from("orders").update({ status: "DENIED" }).eq("id", id);
-  loadOrders();
-};
-
-window.deliverOrder = async (id) => {
+window.deliver = async (id) => {
   await supabase.from("orders").update({ status: "DELIVERED" }).eq("id", id);
   loadOrders();
 };
