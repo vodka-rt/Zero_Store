@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ZeroMc Store - Admin</title>
+<title>Zero MC Store - Admin</title>
 
 <link rel="stylesheet" href="assets/style.css">
 <script type="module" src="assets/admin.js"></script>
@@ -12,7 +12,7 @@
 
 <div class="container">
 
-  <h1>ZeroMc Store • Admin</h1>
+  <h1>Zero MC Store • Admin</h1>
 
   <!-- LOGIN -->
   <div id="loginCard" class="card">
@@ -24,21 +24,22 @@
     <div id="loginMsg" class="small"></div>
   </div>
 
-  <!-- DASH -->
+  <!-- DASHBOARD -->
   <div id="dash" class="hidden">
 
     <button id="btnLogout" class="btn">Sair</button>
 
+    <!-- CONFIGURAÇÕES -->
     <div class="card" style="margin-top:20px;">
       <h2>Configurações</h2>
 
       <input id="siteNameInput" class="input" placeholder="Nome da Loja">
       <br><br>
 
-      <input id="themePrimaryInput" class="input" placeholder="Cor 1 (ex: #111111)">
+      <input id="themePrimaryInput" class="input" placeholder="Cor 1 do Degradê (#111111)">
       <br><br>
 
-      <input id="themeSecondaryInput" class="input" placeholder="Cor 2 (ex: #3a3a3a)">
+      <input id="themeSecondaryInput" class="input" placeholder="Cor 2 do Degradê (#333333)">
       <br><br>
 
       <input id="pixKey" class="input" placeholder="Chave PIX">
@@ -47,34 +48,45 @@
       <input id="pixMessage" class="input" placeholder="Mensagem após pagamento">
       <br><br>
 
-      <button id="btnSaveSettings" class="btn btn-primary">Salvar Configurações</button>
+      <button id="btnSaveSettings" class="btn btn-primary">
+        Salvar Configurações
+      </button>
+
       <div id="settingsMsg" class="small"></div>
     </div>
 
+    <!-- ADICIONAR PRODUTO -->
     <div class="card" style="margin-top:20px;">
-      <h2>Adicionar Kit</h2>
+      <h2>Adicionar Produto</h2>
 
-      <input id="newKitName" class="input" placeholder="Nome do Kit">
+      <input id="productName" class="input" placeholder="Nome">
       <br><br>
 
-      <input id="newKitPrice" class="input" placeholder="Preço (ex: 29.90)">
+      <input id="productPrice" class="input" placeholder="Preço (ex: 29.90)">
       <br><br>
 
-      <input id="newKitImage" class="input" placeholder="URL da Imagem">
+      <input id="productImage" class="input" placeholder="URL da Imagem">
       <br><br>
 
-      <textarea id="newKitDesc" class="input" placeholder="Descrição do Kit"></textarea>
+      <textarea id="productDesc" class="input" placeholder="Descrição"></textarea>
       <br><br>
 
-      <button id="btnCreateKit" class="btn btn-primary">Adicionar Kit</button>
-      <div id="kitMsg" class="small"></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button id="addKit" class="btn btn-primary">Adicionar Kit</button>
+        <button id="addVip" class="btn btn-primary">Adicionar VIP</button>
+        <button id="addBase" class="btn btn-primary">Adicionar Base</button>
+      </div>
+
+      <div id="productMsg" class="small"></div>
     </div>
 
+    <!-- LISTAGEM -->
     <div class="card" style="margin-top:20px;">
-      <h2>Kits</h2>
-      <div id="kitsList"></div>
+      <h2>Produtos</h2>
+      <div id="productsList"></div>
     </div>
 
+    <!-- PEDIDOS -->
     <div class="card" style="margin-top:20px;">
       <h2>Pedidos</h2>
       <div id="ordersList"></div>
