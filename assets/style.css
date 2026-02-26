@@ -1,55 +1,65 @@
 :root{
-  --bg:#0a0a0a;
-  --card:#111111;
-  --stroke:#2a2a2a;
-  --text:#eaeaea;
-  --muted:#9ca3af;
-  --purple:#7c3aed;
-  --purple2:#8b5cf6;
+  --bg:#000000;
+  --card:#0f0f0f;
+  --stroke:#222222;
+  --text:#ffffff;
+  --muted:#bdbdbd;
+
+  /* cores do degradê (o app.js já troca isso pelo settings) */
+  --purple:#111111;   /* cor 1 */
+  --purple2:#3a3a3a;  /* cor 2 */
 }
 
+*{box-sizing:border-box}
 html,body{
   margin:0;
   padding:0;
   font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Arial;
   color:var(--text);
 
-  /* FUNDO CONTROLADO PELO ADMIN */
+  /* FUNDO PRETO/BRANCO (usa as 2 cores do admin) */
   background:
     radial-gradient(900px 520px at 20% 0%, var(--purple2) 0%, #000 60%),
     radial-gradient(900px 520px at 80% 20%, var(--purple) 0%, #000 60%),
-    linear-gradient(135deg,#0a0a0a,#000);
+    linear-gradient(135deg,#000,#111);
 }
 
+a{color:inherit;text-decoration:none}
+
 .card{
-  background:var(--card);
+  background:rgba(15,15,15,.78);
   border:1px solid var(--stroke);
   border-radius:22px;
-  padding:20px;
+  padding:18px;
 }
 
 .input{
   width:100%;
-  padding:10px;
-  border-radius:12px;
-  background:#1a1a1a;
+  padding:10px 12px;
+  border-radius:14px;
+  background:#121212;
   border:1px solid var(--stroke);
-  color:white;
+  color:var(--text);
+  outline:none;
 }
+.input:focus{border-color:#3a3a3a}
 
 .btn{
-  padding:10px 16px;
-  border-radius:12px;
+  padding:10px 14px;
+  border-radius:14px;
+  border:1px solid var(--stroke);
+  background:#151515;
+  color:var(--text);
   cursor:pointer;
-  border:none;
 }
+.btn:hover{background:#1b1b1b}
 
 .btn-primary{
-  background:var(--purple);
-  color:white;
+  background:linear-gradient(135deg,#fff,#d8d8d8);
+  color:#000;
+  border:0;
+  font-weight:700;
 }
+.btn-primary:hover{opacity:.92}
 
-.btn-danger{
-  background:#dc2626;
-  color:white;
-}
+.small{color:var(--muted); font-size:12px}
