@@ -36,7 +36,6 @@ btnLogout.onclick = async () => {
 };
 
 async function checkSession(){
-
   const { data } = await supabase.auth.getSession();
   const user = data.session?.user;
 
@@ -108,7 +107,7 @@ btnCreateKit.onclick = async () => {
   const price = parseFloat(document.getElementById("newKitPrice").value);
   const image = document.getElementById("newKitImage").value;
   const desc = document.getElementById("newKitDesc").value;
-  const category = prompt("Categoria: kits / vips / bases");
+  const category = document.getElementById("newCategory").value;
 
   if(!name || !price){
     kitMsg.textContent = "Preencha nome e preço";
@@ -120,39 +119,70 @@ btnCreateKit.onclick = async () => {
     price_cents: Math.round(price*100),
     image_url: image,
     description: desc,
-    category: category || "kits",
+    category: category,
     active: true
   });
 
   kitMsg.textContent = error ? error.message : "Produto criado ✅";
+
   loadProducts();
 };
 
+function formatBRL(cents){
+  return (cents/100).toLocaleString("pt-BR", {
+    style:"currency",
+    currency:"BRL"
+  });
+}
+
 async function loadProducts(){
 
-  const { data } = await supabase.from("kits").select("*");
+  const { data } = await supabase
+    .from("kits")
+    .select("*")
+    .order("created_at",{ascending:false});
 
   productsList.innerHTML = "";
 
+  const categories = {
+    kits: [],
+    vips: [],
+    bases: []
+  };
+
   data?.forEach(product => {
+    if(categories[product.category]){
+      categories[product.category].push(product);
+    }
+  });
 
-    const div = document.createElement("div");
-    div.className = "card";
-    div.style.marginTop = "10px";
+  Object.keys(categories).forEach(cat => {
 
-    div.innerHTML = `
-      <b>${product.name}</b> (${product.category})<br>
-      ${product.description || ""}<br>
-      R$ ${(product.price_cents/100).toFixed(2)}<br>
-      <button onclick="deleteProduct('${product.id}')" class="btn">Excluir</button>
-    `;
+    const title = document.createElement("h3");
+    title.textContent = cat.toUpperCase();
+    productsList.appendChild(title);
 
-    productsList.appendChild(div);
+    categories[cat].forEach(product => {
+
+      const div = document.createElement("div");
+      div.className = "card";
+      div.style.marginTop = "10px";
+
+      div.innerHTML = `
+        <b>${product.name}</b><br>
+        ${product.description || ""}<br>
+        ${formatBRL(product.price_cents)}<br>
+        <button onclick="deleteProduct('${product.id}')" class="btn">Excluir</button>
+      `;
+
+      productsList.appendChild(div);
+    });
+
   });
 }
 
 window.deleteProduct = async (id)=>{
-  await supabase.from("kits").delete().eq("id", id);
+  await supabase.from("kits").delete().eq("id",id);
   loadProducts();
 };
 
@@ -176,8 +206,9 @@ async function loadOrders(){
     div.style.marginTop = "10px";
 
     div.innerHTML = `
-      ${order.player_name} - ${order.kit_name}<br>
-      ${order.status}<br>
+      <b>${order.player_name}</b> - ${order.kit_name}<br>
+      ${formatBRL(order.total_cents)}<br>
+      Status: ${order.status}<br><br>
       <button onclick="approve('${order.id}')" class="btn">Aprovar</button>
       <button onclick="deny('${order.id}')" class="btn">Negar</button>
       <button onclick="deliver('${order.id}')" class="btn">Entregue</button>
@@ -190,14 +221,14 @@ async function loadOrders(){
 window.approve = async(id)=>{
   await supabase.from("orders").update({status:"PAID"}).eq("id",id);
   loadOrders();
-}
+};
 
 window.deny = async(id)=>{
   await supabase.from("orders").update({status:"DENIED"}).eq("id",id);
   loadOrders();
-}
+};
 
 window.deliver = async(id)=>{
   await supabase.from("orders").update({status:"DELIVERED"}).eq("id",id);
   loadOrders();
-  }
+};
