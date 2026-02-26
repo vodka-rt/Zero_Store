@@ -15,6 +15,7 @@
 .footer{text-align:center;margin-top:40px;font-size:12px;color:#777;}
 table{width:100%;border-collapse:collapse;}
 td{padding:10px;border-bottom:1px solid #222;}
+textarea{width:100%;padding:10px;border-radius:10px;background:#111;border:1px solid #222;color:white;}
 </style>
 </head>
 
@@ -42,33 +43,18 @@ td{padding:10px;border-bottom:1px solid #222;}
   <div id="dash" class="hidden">
 
     <div class="card">
-      <h2>Configurações</h2>
-
-      <input id="siteNameInput" class="input" placeholder="Nome do site">
-      <br><br>
-      <input id="bannerUrlInput" class="input" placeholder="Banner URL">
-      <br><br>
-      <input id="themePrimaryInput" class="input" placeholder="#111111">
-      <br><br>
-      <input id="themeSecondaryInput" class="input" placeholder="#3a3a3a">
-      <br><br>
-      <input id="pixKey" class="input" placeholder="Chave PIX">
-      <br><br>
-      <input id="pixMessage" class="input" placeholder="Mensagem PIX">
-      <br><br>
-
-      <button id="btnSaveSettings" class="btn btn-primary">Salvar</button>
-      <div id="settingsMsg" class="small"></div>
-    </div>
-
-    <br>
-
-    <div class="card">
       <h2>Adicionar Kit</h2>
 
       <input id="newKitName" class="input" placeholder="Nome do Kit">
       <br><br>
+
       <input id="newKitPrice" class="input" placeholder="Preço (ex: 29.90)">
+      <br><br>
+
+      <input id="newKitImage" class="input" placeholder="URL da Imagem">
+      <br><br>
+
+      <textarea id="newKitDesc" placeholder="Descrição do Kit"></textarea>
       <br><br>
 
       <button id="btnCreateKit" class="btn btn-primary">Adicionar Kit</button>
