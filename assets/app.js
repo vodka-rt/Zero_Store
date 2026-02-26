@@ -3,52 +3,70 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-const kitsEl = document.getElementById("kits");
+const kitsContainer = document.getElementById("kitsContainer");
 const bannerBox = document.getElementById("bannerBox");
 
-function brl(cents){
-  return (cents/100).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+function formatBRL(cents) {
+  return (cents / 100).toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  });
 }
 
-function applyTheme(p,s){
-  if(p) document.documentElement.style.setProperty("--purple", p);
-  if(s) document.documentElement.style.setProperty("--purple2", s);
-}
+async function loadPage() {
 
-async function load(){
+  // 🔹 CONFIGURAÇÕES
   const { data: settings } = await supabase
-    .from("settings").select("*").eq("key","public").single();
+    .from("settings")
+    .select("*")
+    .eq("key", "public")
+    .single();
 
-  if(settings){
+  if (settings) {
     document.title = settings.site_name || "ZeroMc Store";
-    applyTheme(settings.theme_primary || "#111111", settings.theme_secondary || "#3a3a3a");
 
-    if(settings.banner_url){
+    if (settings.banner_url) {
       bannerBox.innerHTML = `
-        <img src="${settings.banner_url}" style="width:100%;max-height:280px;object-fit:cover;border-radius:22px;border:1px solid #222">
+        <img src="${settings.banner_url}" 
+             style="width:100%;max-height:300px;object-fit:cover;border-radius:15px;">
       `;
     }
   }
 
-  const { data: kits } = await supabase
-    .from("kits").select("*").eq("active", true);
+  // 🔹 KITS
+  const { data: kits, error } = await supabase
+    .from("kits")
+    .select("*")
+    .eq("active", true);
 
-  kitsEl.innerHTML = "";
-  (kits || []).forEach(k=>{
+  if (error) {
+    kitsContainer.innerHTML = `<div class="small">${error.message}</div>`;
+    return;
+  }
+
+  kitsContainer.innerHTML = "";
+
+  kits?.forEach(kit => {
+
     const div = document.createElement("div");
-    div.className = "kit";
+    div.className = "card";
+    div.style.marginTop = "15px";
+
     div.innerHTML = `
-      ${k.image_url ? `<img src="${k.image_url}">` : `<div style="height:150px;background:#0b0b0b"></div>`}
-      <div class="body">
-        <div style="font-weight:900;font-size:16px;">${k.name}</div>
-        <div class="small" style="margin-top:6px;">${k.description || ""}</div>
-        <div class="price">${brl(k.price_cents || 0)}</div>
-        <a class="btn btn-primary" style="display:block;text-align:center;margin-top:12px;"
-           href="buy.html?kit=${encodeURIComponent(k.id)}">Comprar</a>
-      </div>
+      ${kit.image_url ? `<img src="${kit.image_url}" 
+         style="width:100%;max-height:200px;object-fit:cover;border-radius:10px;">` : ""}
+      <h3>${kit.name}</h3>
+      <p>${kit.description || ""}</p>
+      <b>${formatBRL(kit.price_cents)}</b>
+      <br><br>
+      <a href="pagamentos.html?kit=${kit.id}" class="btn btn-primary">
+        Comprar
+      </a>
     `;
-    kitsEl.appendChild(div);
+
+    kitsContainer.appendChild(div);
   });
+
 }
 
-load();
+loadPage();
