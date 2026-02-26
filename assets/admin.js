@@ -3,25 +3,19 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-/* ================= LOGIN ================= */
+/* LOGIN */
 
 const loginCard = document.getElementById("loginCard");
 const dash = document.getElementById("dash");
-const btnLogout = document.getElementById("btnLogout");
-
-const email = document.getElementById("email");
-const password = document.getElementById("password");
 const btnLogin = document.getElementById("btnLogin");
+const btnLogout = document.getElementById("btnLogout");
 const loginMsg = document.getElementById("loginMsg");
 
 btnLogin.onclick = async () => {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
 
-  loginMsg.textContent = "";
-
-  const { error } = await supabase.auth.signInWithPassword({
-    email: email.value.trim(),
-    password: password.value,
-  });
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
 
   if(error){
     loginMsg.textContent = error.message;
@@ -37,15 +31,12 @@ btnLogout.onclick = async () => {
 
 async function checkSession(){
   const { data } = await supabase.auth.getSession();
-  const user = data.session?.user;
-
-  if(!user){
+  if(!data.session){
     loginCard.classList.remove("hidden");
     dash.classList.add("hidden");
   } else {
     loginCard.classList.add("hidden");
     dash.classList.remove("hidden");
-    loadSettings();
     loadProducts();
     loadOrders();
   }
@@ -53,64 +44,19 @@ async function checkSession(){
 
 checkSession();
 
-/* ================= SETTINGS ================= */
+/* ADICIONAR PRODUTO */
 
-const siteNameInput = document.getElementById("siteNameInput");
-const themePrimaryInput = document.getElementById("themePrimaryInput");
-const themeSecondaryInput = document.getElementById("themeSecondaryInput");
-const pixKey = document.getElementById("pixKey");
-const pixMessage = document.getElementById("pixMessage");
-const btnSaveSettings = document.getElementById("btnSaveSettings");
-const settingsMsg = document.getElementById("settingsMsg");
+const productMsg = document.getElementById("productMsg");
 
-async function loadSettings(){
-  const { data } = await supabase
-    .from("settings")
-    .select("*")
-    .eq("key","public")
-    .single();
+async function createProduct(category){
 
-  if(!data) return;
-
-  siteNameInput.value = data.site_name || "";
-  themePrimaryInput.value = data.theme_primary || "";
-  themeSecondaryInput.value = data.theme_secondary || "";
-  pixKey.value = data.pix_key || "";
-  pixMessage.value = data.pix_message || "";
-}
-
-btnSaveSettings.onclick = async () => {
-
-  const { error } = await supabase
-    .from("settings")
-    .upsert({
-      key:"public",
-      site_name: siteNameInput.value,
-      theme_primary: themePrimaryInput.value,
-      theme_secondary: themeSecondaryInput.value,
-      pix_key: pixKey.value,
-      pix_message: pixMessage.value
-    }, { onConflict:"key" });
-
-  settingsMsg.textContent = error ? error.message : "Configurações salvas ✅";
-};
-
-/* ================= PRODUTOS ================= */
-
-const productsList = document.getElementById("kitsList");
-const btnCreateKit = document.getElementById("btnCreateKit");
-const kitMsg = document.getElementById("kitMsg");
-
-btnCreateKit.onclick = async () => {
-
-  const name = document.getElementById("newKitName").value;
-  const price = parseFloat(document.getElementById("newKitPrice").value);
-  const image = document.getElementById("newKitImage").value;
-  const desc = document.getElementById("newKitDesc").value;
-  const category = document.getElementById("newCategory").value;
+  const name = document.getElementById("productName").value;
+  const price = parseFloat(document.getElementById("productPrice").value);
+  const image = document.getElementById("productImage").value;
+  const desc = document.getElementById("productDesc").value;
 
   if(!name || !price){
-    kitMsg.textContent = "Preencha nome e preço";
+    productMsg.textContent = "Preencha nome e preço";
     return;
   }
 
@@ -123,61 +69,51 @@ btnCreateKit.onclick = async () => {
     active: true
   });
 
-  kitMsg.textContent = error ? error.message : "Produto criado ✅";
+  productMsg.textContent = error ? error.message : "Produto criado ✅";
 
   loadProducts();
-};
+}
 
-function formatBRL(cents){
-  return (cents/100).toLocaleString("pt-BR", {
-    style:"currency",
-    currency:"BRL"
-  });
+document.getElementById("addKit").onclick = () => createProduct("kits");
+document.getElementById("addVip").onclick = () => createProduct("vips");
+document.getElementById("addBase").onclick = () => createProduct("bases");
+
+/* LISTAR PRODUTOS */
+
+const productsList = document.getElementById("productsList");
+
+function formatBRL(c){
+  return (c/100).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
 }
 
 async function loadProducts(){
 
-  const { data } = await supabase
-    .from("kits")
-    .select("*")
-    .order("created_at",{ascending:false});
+  const { data } = await supabase.from("kits").select("*");
 
   productsList.innerHTML = "";
 
-  const categories = {
-    kits: [],
-    vips: [],
-    bases: []
-  };
-
-  data?.forEach(product => {
-    if(categories[product.category]){
-      categories[product.category].push(product);
-    }
-  });
-
-  Object.keys(categories).forEach(cat => {
+  ["kits","vips","bases"].forEach(cat => {
 
     const title = document.createElement("h3");
     title.textContent = cat.toUpperCase();
     productsList.appendChild(title);
 
-    categories[cat].forEach(product => {
+    data.filter(p => p.category === cat)
+        .forEach(p => {
 
-      const div = document.createElement("div");
-      div.className = "card";
-      div.style.marginTop = "10px";
+          const div = document.createElement("div");
+          div.className = "card";
+          div.style.marginTop = "10px";
 
-      div.innerHTML = `
-        <b>${product.name}</b><br>
-        ${product.description || ""}<br>
-        ${formatBRL(product.price_cents)}<br>
-        <button onclick="deleteProduct('${product.id}')" class="btn">Excluir</button>
-      `;
+          div.innerHTML = `
+            <b>${p.name}</b><br>
+            ${p.description || ""}<br>
+            ${formatBRL(p.price_cents)}<br>
+            <button onclick="deleteProduct('${p.id}')" class="btn">Excluir</button>
+          `;
 
-      productsList.appendChild(div);
-    });
-
+          productsList.appendChild(div);
+        });
   });
 }
 
@@ -186,32 +122,27 @@ window.deleteProduct = async (id)=>{
   loadProducts();
 };
 
-/* ================= PEDIDOS ================= */
+/* PEDIDOS */
 
 const ordersList = document.getElementById("ordersList");
 
 async function loadOrders(){
 
-  const { data } = await supabase
-    .from("orders")
-    .select("*")
-    .order("created_at",{ascending:false});
+  const { data } = await supabase.from("orders").select("*");
 
   ordersList.innerHTML = "";
 
-  data?.forEach(order => {
+  data.forEach(o => {
 
     const div = document.createElement("div");
     div.className = "card";
     div.style.marginTop = "10px";
 
     div.innerHTML = `
-      <b>${order.player_name}</b> - ${order.kit_name}<br>
-      ${formatBRL(order.total_cents)}<br>
-      Status: ${order.status}<br><br>
-      <button onclick="approve('${order.id}')" class="btn">Aprovar</button>
-      <button onclick="deny('${order.id}')" class="btn">Negar</button>
-      <button onclick="deliver('${order.id}')" class="btn">Entregue</button>
+      ${o.player_name} - ${o.kit_name}<br>
+      ${o.status}<br>
+      <button onclick="approve('${o.id}')" class="btn">Aprovar</button>
+      <button onclick="deliver('${o.id}')" class="btn">Entregue</button>
     `;
 
     ordersList.appendChild(div);
@@ -220,11 +151,6 @@ async function loadOrders(){
 
 window.approve = async(id)=>{
   await supabase.from("orders").update({status:"PAID"}).eq("id",id);
-  loadOrders();
-};
-
-window.deny = async(id)=>{
-  await supabase.from("orders").update({status:"DENIED"}).eq("id",id);
   loadOrders();
 };
 
